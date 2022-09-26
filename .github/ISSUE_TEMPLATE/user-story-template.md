@@ -11,9 +11,12 @@ assignees: ''
 **I need** <some function>
 **So that** <I get some benefit>
 
- **Assumptions**
+ ### Assumptions
 - List any assumptions about how to implement the Story
 
-**Acceptance Criteria**
-- Define what it means to be "done"
-- Use Gherkin syntax (Given, When, Then)
+### Acceptance Criteria
+ ```gherkin
+ Given [some context]
+ When [certain action is taken]
+ Then [the outcome of action is observed]
+ ```

@@ -30,28 +30,28 @@ class Customer(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63),nullable=False)
+    firstname = db.Column(db.String(63),nullable=False)
     lastname = db.Column(db.String(63),nullable=False)
-    email = db.Column(db.String(120))
-    phone = db.Column(db.String(60))
-    address1 = db.Column(db.String(256))
-    address2 = db.Column(db.String(256))
+    email = db.Column(db.String(120),nullable=False)
+    phone = db.Column(db.String(30))
+    street_line1 = db.Column(db.String(256))
+    street_line2 = db.Column(db.String(256))
     city = db.Column(db.String(64))
-    state = db.Column(db.String(16))
-    country = db.Column(db.String(63))
-    zipcode = db.Column(db.String(60))
-    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
-    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now) 
+    state = db.Column(db.String(46))
+    country = db.Column(db.String(93))
+    zipcode = db.Column(db.String(20))
+    created_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow) 
 
 
     def __repr__(self):
-        return "<Customer %r id=[%s]>" % (self.name, self.id)
+        return "<Customer %r id=[%s]>" % (self.firstname, self.id)
 
     def create(self):
         """
         Creates a Customer to the database
         """
-        logger.info("Creating %s", self.name)
+        logger.info("Creating %s", self.firstname)
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
@@ -60,26 +60,26 @@ class Customer(db.Model):
         """
         Updates a Customer to the database
         """
-        logger.info("Saving %s", self.name)
+        logger.info("Saving %s", self.firstname)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
     def delete(self):
         """ Removes a Customer from the data store """
-        logger.info("Deleting %s", self.name)
+        logger.info("Deleting %s", self.firstname)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
         return {"id": self.id, 
-                "name": self.name,
+                "firstname": self.firstname,
                 "lastname": self.lastname,
                 "email": self.email,
                 "phone": self.phone,
-                "address1": self.address1,
-                "address2": self.address2,
+                "street_line1": self.street_line1,
+                "street_line2": self.street_line2,
                 "city": self.city,
                 "state": self.state,
                 "country": self.country,
@@ -96,12 +96,12 @@ class Customer(db.Model):
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.name = data["name"]
+            self.firstname = data["firstname"]
             self.lastname = data["lastname"]
             self.email = data["email"]
             self.phone = data["phone"]
-            self.address1 = data["address1"]
-            self.address2 = data["address2"]
+            self.street_line1 = data["street_line1"]
+            self.street_line1 = data["street_line2"]
             self.city = data["city"]
             self.state = data["state"]
             self.country = data["country"]
@@ -141,11 +141,11 @@ class Customer(db.Model):
         return cls.query.get(by_id)
 
     @classmethod
-    def find_by_name(cls, name):
-        """Returns all Customers with the given name
+    def find_by_name(cls, firstname):
+        """Returns all Customers with the given firstname
 
         Args:
-            name (string): the name of the Customers you want to match
+            firstname (string): the firstname of the Customers you want to match
         """
-        logger.info("Processing name query for %s ...", name)
-        return cls.query.filter(cls.name == name)
+        logger.info("Processing firstname query for %s ...", firstname)
+        return cls.query.filter(cls.firstname == firstname)

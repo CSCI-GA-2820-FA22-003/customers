@@ -48,15 +48,15 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ It should Create an Customer and assert that it exists """
-        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address1="casa",address2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(firstname="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",street_line1="casa",street_line2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
-        self.assertEqual(customer.name, "Katerine")
+        self.assertEqual(customer.firstname, "Katerine")
         self.assertEqual(customer.lastname, "Perdomo")
         self.assertEqual(customer.email, "kate@email.com")
         self.assertEqual(customer.phone, "XXXXXX")
-        self.assertEqual(customer.address1, "casa")
-        self.assertEqual(customer.address2, "casa")
+        self.assertEqual(customer.street_line1, "casa")
+        self.assertEqual(customer.street_line2, "casa")
         self.assertEqual(customer.state, "CU")
         self.assertEqual(customer.country, "Colombia")
         self.assertEqual(customer.zipcode, "11023")
@@ -65,7 +65,7 @@ class TestCustomer(unittest.TestCase):
         """It should Create a customer and add it to the database"""
         customers = Customer.all()
         self.assertEqual(customers, [])
-        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address1="casa",address2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(firstname="Katerine",lastname="Perdomo",email="kate@email.com",phone="+1-258-937",street_line1="casa",street_line2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
         customer.create()
@@ -83,10 +83,10 @@ class TestCustomer(unittest.TestCase):
         self.assertIsNotNone(customer.id)
         # Fetch it back
         found_customer = Customer.find(customer.id)
-        self.assertEqual(found_customer.id, found_customer.id)
-        self.assertEqual(found_customer.name, found_customer.name)
+        self.assertEqual(found_customer.id, customer.id)
+        self.assertEqual(found_customer.firstname, customer.firstname)
         self.assertEqual(found_customer.lastname, customer.lastname)
-        self.assertEqual(found_customer.address1, customer.address1)
+        self.assertEqual(found_customer.street_line1, customer.street_line1)
 
     def test_update_a_customer(self):
         """It should Update a Customer"""
@@ -143,12 +143,12 @@ class TestCustomer(unittest.TestCase):
         customer = CustomerFactory()
         data = customer.serialize()
         self.assertEqual(data["id"], customer.id)
-        self.assertEqual(data["name"], customer.name)
+        self.assertEqual(data["firstname"], customer.firstname)
         self.assertEqual(data["lastname"], customer.lastname)
         self.assertEqual(data["email"], customer.email)
         self.assertEqual(data["phone"], customer.phone)
-        self.assertEqual(data["address1"], customer.address1)
-        self.assertEqual(data["address2"], customer.address2)
+        self.assertEqual(data["street_line1"], customer.street_line1)
+        self.assertEqual(data["street_line2"], customer.street_line2)
         self.assertEqual(data["city"], customer.city)
         self.assertEqual(data["state"], customer.state)
         self.assertEqual(data["country"], customer.country) 
@@ -163,4 +163,9 @@ class TestCustomer(unittest.TestCase):
         customer.deserialize(data)
         self.assertNotEquals(customer, None)
         self.assertEqual(customer.id, None)
-        self.assertEqual(customer.name, data["name"])
+        self.assertEqual(customer.firstname, data["firstname"])
+
+    def test_deserialize_with_key_error(self):
+        """It should not Deserialize an account with a KeyError"""
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, {})

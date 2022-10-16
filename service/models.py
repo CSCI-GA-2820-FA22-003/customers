@@ -31,7 +31,7 @@ class Customer(db.Model):
     phone = db.Column(db.String(20))
     address = db.Column(db.String(256))
     city = db.Column(db.String(64))
-    state = db.Column(db.String(2))
+    state = db.Column(db.String(3))
     country = db.Column(db.String(63))
     zipcode = db.Column(db.String(16)) 
 
@@ -52,6 +52,8 @@ class Customer(db.Model):
         Updates a Customer to the database
         """
         logger.info("Saving %s", self.name)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
     def delete(self):

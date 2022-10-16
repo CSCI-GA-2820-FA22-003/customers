@@ -1,5 +1,8 @@
+
 import factory
 from service.models import Customer
+from factory.fuzzy import FuzzyDate
+from datetime import date
 
 class CustomerFactory(factory.Factory):
     """Creates fake pets that you don't have to feed"""
@@ -14,8 +17,11 @@ class CustomerFactory(factory.Factory):
     lastname = factory.Faker("last_name")
     email = factory.Faker("email")
     phone = factory.Faker("phone_number")
-    address = factory.Faker("street_address")
+    address1 = factory.Faker("street_address")
+    address2 = factory.Faker("street_address")
     city = factory.Faker("city")
     state = factory.Faker("state_abbr")
     country = factory.Faker("country")
     zipcode = factory.Faker("postalcode")
+    created_at = FuzzyDate(date(2022, 1, 1))
+    updated_at = FuzzyDate(date(2022, 1, 1))

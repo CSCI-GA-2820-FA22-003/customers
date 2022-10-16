@@ -14,7 +14,7 @@ DATABASE_URI = os.getenv(
 )
 
 ######################################################################
-#  <your resource name>   M O D E L   T E S T   C A S E S
+#  C U S T O M E R   M O D E L   T E S T   C A S E S
 ######################################################################
 class TestCustomer(unittest.TestCase):
     """ Test Cases for Customer Model """
@@ -48,14 +48,15 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ It should Create an Customer and assert that it exists """
-        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address1="casa",address2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
         self.assertEqual(customer.name, "Katerine")
         self.assertEqual(customer.lastname, "Perdomo")
         self.assertEqual(customer.email, "kate@email.com")
         self.assertEqual(customer.phone, "XXXXXX")
-        self.assertEqual(customer.address, "casa")
+        self.assertEqual(customer.address1, "casa")
+        self.assertEqual(customer.address2, "casa")
         self.assertEqual(customer.state, "CU")
         self.assertEqual(customer.country, "Colombia")
         self.assertEqual(customer.zipcode, "11023")
@@ -64,7 +65,7 @@ class TestCustomer(unittest.TestCase):
         """It should Create a customer and add it to the database"""
         customers = Customer.all()
         self.assertEqual(customers, [])
-        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(name="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",address1="casa",address2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
         customer.create()
@@ -85,6 +86,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(found_customer.id, found_customer.id)
         self.assertEqual(found_customer.name, found_customer.name)
         self.assertEqual(found_customer.lastname, customer.lastname)
+        self.assertEqual(found_customer.address1, customer.address1)
 
     def test_update_a_customer(self):
         """It should Update a Customer"""
@@ -94,7 +96,7 @@ class TestCustomer(unittest.TestCase):
         customer.create()
         logging.debug(customer)
         self.assertIsNotNone(customer.id)
-        # Change it an save it
+        # Change it and save it
         customer.lastname = "Moreno"
         original_id = customer.id
         customer.update()
@@ -119,7 +121,7 @@ class TestCustomer(unittest.TestCase):
         customer = CustomerFactory()
         customer.create()
         self.assertEqual(len(Customer.all()), 1)
-        # delete the pet and make sure it isn't in the database
+        # delete the customer and make sure it isn't in the database
         customer.delete()
         self.assertEqual(len(Customer.all()), 0)
     
@@ -127,15 +129,16 @@ class TestCustomer(unittest.TestCase):
         """It should List all Customers in the database"""
         customers = Customer.all()
         self.assertEqual(customers, [])
+        num_new_customers = 5
         # Create 5 Customers
-        for _ in range(5):
+        for _ in range(num_new_customers):
             customer = CustomerFactory()
             customer.create()
         # See if we get back 5 customers
         customers = Customer.all()
-        self.assertEqual(len(customers), 5)
+        self.assertEqual(len(customers), num_new_customers)
 
-    def test_serialize_a_pet(self):
+    def test_serialize_a_customer(self):
         """It should serialize a Customer"""
         customer = CustomerFactory()
         data = customer.serialize()
@@ -144,10 +147,20 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["lastname"], customer.lastname)
         self.assertEqual(data["email"], customer.email)
         self.assertEqual(data["phone"], customer.phone)
-        self.assertEqual(data["address"], customer.address)
+        self.assertEqual(data["address1"], customer.address1)
+        self.assertEqual(data["address2"], customer.address2)
         self.assertEqual(data["city"], customer.city)
         self.assertEqual(data["state"], customer.state)
-        self.assertEqual(data["country"], customer.country)
-
-    #def test_deserialize_a_customer(self):
-       
+        self.assertEqual(data["country"], customer.country) 
+        self.assertEqual(data["zipcode"], customer.zipcode) 
+        self.assertEqual(data["created_at"], customer.created_at)  
+        self.assertEqual(data["updated_at"], customer.updated_at)  
+    
+    def test_deserialize_a_customer(self):
+        """It should de-serialize a Customer"""
+        data = CustomerFactory().serialize()
+        customer = Customer()
+        customer.deserialize(data)
+        self.assertNotEquals(customer, None)
+        self.assertEqual(customer.id, None)
+        self.assertEqual(customer.name, data["name"])

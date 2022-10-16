@@ -3,8 +3,13 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
+from email.policy import default
 import logging
+from time import timezone
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+from sqlalchemy import func
 
 logger = logging.getLogger("flask.app")
 
@@ -25,15 +30,19 @@ class Customer(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63))
-    lastname = db.Column(db.String(63))
+    name = db.Column(db.String(63),nullable=False)
+    lastname = db.Column(db.String(63),nullable=False)
     email = db.Column(db.String(120))
-    phone = db.Column(db.String(20))
-    address = db.Column(db.String(256))
+    phone = db.Column(db.String(60))
+    address1 = db.Column(db.String(256))
+    address2 = db.Column(db.String(256))
     city = db.Column(db.String(64))
-    state = db.Column(db.String(3))
+    state = db.Column(db.String(16))
     country = db.Column(db.String(63))
-    zipcode = db.Column(db.String(16)) 
+    zipcode = db.Column(db.String(60))
+    created_at = db.Column(db.DateTime(timezone=True), server_default=func.now())
+    updated_at = db.Column(db.DateTime, default=datetime.now, onupdate=datetime.now) 
+
 
     def __repr__(self):
         return "<Customer %r id=[%s]>" % (self.name, self.id)
@@ -69,11 +78,14 @@ class Customer(db.Model):
                 "lastname": self.lastname,
                 "email": self.email,
                 "phone": self.phone,
-                "address": self.address,
+                "address1": self.address1,
+                "address2": self.address2,
                 "city": self.city,
                 "state": self.state,
                 "country": self.country,
-                "zipcode": self.zipcode
+                "zipcode": self.zipcode,
+                "created_at":self.created_at,
+                "updated_at":self.updated_at
                 }
 
     def deserialize(self, data):
@@ -88,11 +100,14 @@ class Customer(db.Model):
             self.lastname = data["lastname"]
             self.email = data["email"]
             self.phone = data["phone"]
-            self.address = data["address"]
+            self.address1 = data["address1"]
+            self.address2 = data["address2"]
             self.city = data["city"]
             self.state = data["state"]
             self.country = data["country"]
             self.zipcode = data["zipcode"]
+            self.created_at = data["created_at"]
+            self.updated_at =data["updated_at"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])

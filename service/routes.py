@@ -23,11 +23,47 @@ def index():
         status.HTTP_200_OK,
     )
 
+######################################################################
+# CREATE A NEW CUSTOMER
+######################################################################
+@app.route("/customers", methods=["POST"])
+def create_customers():
+    """
+    Creates a Customer
+    This endpoint will create a Customer based on the data in the body that is posted
+    """
+    app.logger.info("Request to create an Customer")
+    check_content_type("application/json")
+
+    # Create the account
+    customer = Customer()
+    customer.deserialize(request.get_json())
+    customer.create()
+
+    # Create a message to return
+    message = customer.serialize()
+    # Change to "get customer" when it is made
+    location_url = url_for("create_customers", customer_id=customer.id, _external=True)
+
+    app.logger.info("Customer with ID [%s] created.", customer.id)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    )
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
+def check_content_type(media_type):
+    """Checks that the media type is correct"""
+    content_type = request.headers.get("Content-Type")
+    if content_type and content_type == media_type:
+        return
+    app.logger.error("Invalid Content-Type: %s", content_type)
+    abort(
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        "Content-Type must be {}".format(media_type),
+    )
 
 def init_db():
     """ Initializes the SQLAlchemy app """

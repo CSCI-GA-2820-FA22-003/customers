@@ -3,8 +3,13 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
+from email.policy import default
 import logging
+from time import timezone
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
+
+from sqlalchemy import func
 
 logger = logging.getLogger("flask.app")
 
@@ -15,65 +20,100 @@ db = SQLAlchemy()
 class DataValidationError(Exception):
     """ Used for an data validation errors when deserializing """
 
-    pass
 
-
-class YourResourceModel(db.Model):
+class Customer(db.Model):
     """
-    Class that represents a YourResourceModel
+    Class that represents a customers
     """
 
     app = None
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(63))
+    firstname = db.Column(db.String(63),nullable=False)
+    lastname = db.Column(db.String(63),nullable=False)
+    email = db.Column(db.String(120),nullable=False)
+    phone = db.Column(db.String(30),nullable=False)
+    street_line1 = db.Column(db.String(256),nullable=False)
+    street_line2 = db.Column(db.String(256),nullable=False)
+    city = db.Column(db.String(64),nullable=False)
+    state = db.Column(db.String(46),nullable=False)
+    country = db.Column(db.String(93),nullable=False)
+    zipcode = db.Column(db.String(20),nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow) 
+
 
     def __repr__(self):
-        return "<YourResourceModel %r id=[%s]>" % (self.name, self.id)
+        return "<Customer %r id=[%s]>" % (self.firstname, self.id)
 
     def create(self):
         """
-        Creates a YourResourceModel to the database
+        Creates a Customer to the database
         """
-        logger.info("Creating %s", self.name)
+        logger.info("Creating %s", self.firstname)
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
 
     def update(self):
         """
-        Updates a YourResourceModel to the database
+        Updates a Customer to the database
         """
-        logger.info("Saving %s", self.name)
+        logger.info("Saving %s", self.firstname)
+        if not self.id:
+            raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
     def delete(self):
-        """ Removes a YourResourceModel from the data store """
-        logger.info("Deleting %s", self.name)
+        """ Removes a Customer from the data store """
+        logger.info("Deleting %s", self.firstname)
         db.session.delete(self)
         db.session.commit()
 
     def serialize(self):
-        """ Serializes a YourResourceModel into a dictionary """
-        return {"id": self.id, "name": self.name}
+        """ Serializes a Customer into a dictionary """
+        return {"id": self.id, 
+                "firstname": self.firstname,
+                "lastname": self.lastname,
+                "email": self.email,
+                "phone": self.phone,
+                "street_line1": self.street_line1,
+                "street_line2": self.street_line2,
+                "city": self.city,
+                "state": self.state,
+                "country": self.country,
+                "zipcode": self.zipcode,
+                "created_at":self.created_at,
+                "updated_at":self.updated_at
+                }
 
     def deserialize(self, data):
         """
-        Deserializes a YourResourceModel from a dictionary
+        Deserializes a Customer from a dictionary
 
         Args:
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.name = data["name"]
+            self.firstname = data["firstname"]
+            self.lastname = data["lastname"]
+            self.email = data["email"]
+            self.phone = data["phone"]
+            self.street_line1 = data["street_line1"]
+            self.street_line2 = data["street_line2"]
+            self.city = data["city"]
+            self.state = data["state"]
+            self.country = data["country"]
+            self.zipcode = data["zipcode"]
+            self.created_at = data["created_at"]
+            self.updated_at =data["updated_at"]
         except KeyError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: missing " + error.args[0]
-            )
+                "Invalid Customer: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid YourResourceModel: body of request contained bad or no data - "
+                "Invalid Customer: body of request contained bad or no data - "
                 "Error message: " + error
             )
         return self
@@ -90,22 +130,22 @@ class YourResourceModel(db.Model):
 
     @classmethod
     def all(cls):
-        """ Returns all of the YourResourceModels in the database """
+        """ Returns all of the Customers in the database """
         logger.info("Processing all YourResourceModels")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
-        """ Finds a YourResourceModel by it's ID """
+        """ Finds a Customer by it's ID """
         logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
     @classmethod
-    def find_by_name(cls, name):
-        """Returns all YourResourceModels with the given name
+    def find_by_name(cls, firstname):
+        """Returns all Customers with the given firstname
 
         Args:
-            name (string): the name of the YourResourceModels you want to match
+            firstname (string): the firstname of the Customers you want to match
         """
-        logger.info("Processing name query for %s ...", name)
-        return cls.query.filter(cls.name == name)
+        logger.info("Processing firstname query for %s ...", firstname)
+        return cls.query.filter(cls.firstname == firstname)

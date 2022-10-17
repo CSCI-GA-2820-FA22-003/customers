@@ -33,13 +33,13 @@ class Customer(db.Model):
     firstname = db.Column(db.String(63),nullable=False)
     lastname = db.Column(db.String(63),nullable=False)
     email = db.Column(db.String(120),nullable=False)
-    phone = db.Column(db.String(30))
-    street_line1 = db.Column(db.String(256))
-    street_line2 = db.Column(db.String(256))
-    city = db.Column(db.String(64))
-    state = db.Column(db.String(46))
-    country = db.Column(db.String(93))
-    zipcode = db.Column(db.String(20))
+    phone = db.Column(db.String(30),nullable=False)
+    street_line1 = db.Column(db.String(256),nullable=False)
+    street_line2 = db.Column(db.String(256),nullable=False)
+    city = db.Column(db.String(64),nullable=False)
+    state = db.Column(db.String(46),nullable=False)
+    country = db.Column(db.String(93),nullable=False)
+    zipcode = db.Column(db.String(20),nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow) 
 
@@ -101,7 +101,7 @@ class Customer(db.Model):
             self.email = data["email"]
             self.phone = data["phone"]
             self.street_line1 = data["street_line1"]
-            self.street_line1 = data["street_line2"]
+            self.street_line2 = data["street_line2"]
             self.city = data["city"]
             self.state = data["state"]
             self.country = data["country"]

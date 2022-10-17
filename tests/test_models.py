@@ -164,6 +164,18 @@ class TestCustomer(unittest.TestCase):
         self.assertNotEquals(customer, None)
         self.assertEqual(customer.id, None)
         self.assertEqual(customer.firstname, data["firstname"])
+        self.assertEqual(customer.lastname, data["lastname"])
+        self.assertEqual(customer.email, data["email"])
+        self.assertEqual(customer.phone, data["phone"])
+        self.assertEqual(customer.street_line1, data["street_line1"])
+        self.assertEqual(customer.street_line2, data["street_line2"])
+        self.assertEqual(customer.city, data["city"])
+        self.assertEqual(customer.state, data["state"])
+        self.assertEqual(customer.city, data["city"])
+        self.assertEqual(customer.country, data["country"])
+        self.assertEqual(customer.zipcode, data["zipcode"])
+        self.assertEqual(customer.created_at, data["created_at"])
+        self.assertEqual(customer.updated_at, data["updated_at"])
 
     def test_deserialize_with_key_error(self):
         """It should not Deserialize an account with a KeyError"""

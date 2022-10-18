@@ -3,13 +3,13 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
-from email.policy import default
+# from email.policy import default
 import logging
-from time import timezone
-from flask_sqlalchemy import SQLAlchemy
+# from time import timezone
 from datetime import datetime
+from flask_sqlalchemy import SQLAlchemy
 
-from sqlalchemy import func
+# from sqlalchemy import func
 
 logger = logging.getLogger("flask.app")
 
@@ -30,19 +30,18 @@ class Customer(db.Model):
 
     # Table Schema
     id = db.Column(db.Integer, primary_key=True)
-    firstname = db.Column(db.String(63),nullable=False)
-    lastname = db.Column(db.String(63),nullable=False)
-    email = db.Column(db.String(120),nullable=False)
-    phone = db.Column(db.String(30),nullable=False)
-    street_line1 = db.Column(db.String(256),nullable=False)
-    street_line2 = db.Column(db.String(256),nullable=False)
-    city = db.Column(db.String(64),nullable=False)
-    state = db.Column(db.String(46),nullable=False)
-    country = db.Column(db.String(93),nullable=False)
-    zipcode = db.Column(db.String(20),nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=False, default =datetime.utcnow) 
-
+    firstname = db.Column(db.String(63), nullable=False)
+    lastname = db.Column(db.String(63), nullable=False)
+    email = db.Column(db.String(120), nullable=False)
+    phone = db.Column(db.String(30), nullable=False)
+    street_line1 = db.Column(db.String(256), nullable=False)
+    street_line2 = db.Column(db.String(256), nullable=False)
+    city = db.Column(db.String(64), nullable=False)
+    state = db.Column(db.String(46), nullable=False)
+    country = db.Column(db.String(93), nullable=False)
+    zipcode = db.Column(db.String(20), nullable=False)
+    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
 
     def __repr__(self):
         return "<Customer %r id=[%s]>" % (self.firstname, self.id)
@@ -73,7 +72,7 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.id, 
+        return {"id": self.id,
                 "firstname": self.firstname,
                 "lastname": self.lastname,
                 "email": self.email,
@@ -84,8 +83,8 @@ class Customer(db.Model):
                 "state": self.state,
                 "country": self.country,
                 "zipcode": self.zipcode,
-                "created_at":self.created_at,
-                "updated_at":self.updated_at
+                "created_at": self.created_at,
+                "updated_at": self.updated_at
                 }
 
     def deserialize(self, data):
@@ -107,7 +106,7 @@ class Customer(db.Model):
             self.country = data["country"]
             self.zipcode = data["zipcode"]
             self.created_at = data["created_at"]
-            self.updated_at =data["updated_at"]
+            self.updated_at = data["updated_at"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])

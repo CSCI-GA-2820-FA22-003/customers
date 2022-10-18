@@ -5,14 +5,14 @@ Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
   coverage report -m
 """
-from email.mime import application
-import json
-import os
+# from email.mime import application
+# import json
+# import os
 import logging
 from unittest import TestCase
-from unittest.mock import MagicMock, patch
+# from unittest.mock import MagicMock, patch
 from service import app
-from service.models import Customer, db
+# from service.models import Customer, db
 from service.common import status
 from tests.factories import CustomerFactory  # HTTP Status Codes
 
@@ -21,6 +21,8 @@ BASE_URL = "/customers"
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
+
+
 class TestYourResourceServer(TestCase):
     """ REST API Server Tests """
 
@@ -41,8 +43,6 @@ class TestYourResourceServer(TestCase):
     def tearDown(self):
         """ This runs after each test """
         pass
-
-
 
     def _create_customers(self, count):
         """Factory method to create customers in bulk"""
@@ -173,4 +173,4 @@ class TestYourResourceServer(TestCase):
     def test_get_customer_not_found(self):
         """It should not Read a Customer that is not found"""
         resp = self.app.get(f"{BASE_URL}/0")
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND) 
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

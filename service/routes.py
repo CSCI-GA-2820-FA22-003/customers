@@ -4,9 +4,9 @@ My Service
 Describe what your service does here
 """
 
-from flask import Flask, jsonify, request, url_for, make_response, abort
-from .common import status  # HTTP Status Codes
+from flask import jsonify, request, url_for, make_response, abort
 from service.models import Customer
+from .common import status  # HTTP Status Codes
 
 # Import Flask application
 from . import app
@@ -26,6 +26,8 @@ def index():
 ######################################################################
 # CREATE A NEW CUSTOMER
 ######################################################################
+
+
 @app.route("/customers", methods=["POST"])
 def create_customers():
     """
@@ -54,6 +56,7 @@ def create_customers():
 # READ A CUSTOMER
 ######################################################################
 
+
 @app.route("/customers/<int:customer_id>", methods=["GET"])
 def get_customer(customer_id):
     """
@@ -77,6 +80,7 @@ def get_customer(customer_id):
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 
+
 def check_content_type(media_type):
     """Checks that the media type is correct"""
     content_type = request.headers.get("Content-Type")
@@ -88,8 +92,8 @@ def check_content_type(media_type):
         "Content-Type must be {}".format(media_type),
     )
 
+
 def init_db():
     """ Initializes the SQLAlchemy app """
     global app
     Customer.init_db(app)
-

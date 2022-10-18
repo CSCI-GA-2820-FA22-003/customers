@@ -43,7 +43,7 @@ def create_customers():
     # Create a message to return
     message = customer.serialize()
     # Change to "get customer" when it is made
-    location_url = url_for("create_customers", customer_id=customer.id, _external=True)
+    location_url = url_for("get_customer", customer_id=customer.id, _external=True)
 
     app.logger.info("Customer with ID [%s] created.", customer.id)
     return make_response(
@@ -72,7 +72,7 @@ def get_customer(customer_id):
 
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
-    
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################

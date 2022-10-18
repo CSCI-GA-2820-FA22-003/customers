@@ -4,6 +4,7 @@ from service.models import Customer
 from factory.fuzzy import FuzzyDate
 from datetime import date
 
+
 class CustomerFactory(factory.Factory):
     """Creates fake customer that you don't have to feed"""
 

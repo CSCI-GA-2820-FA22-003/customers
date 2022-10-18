@@ -170,6 +170,30 @@ class TestYourResourceServer(TestCase):
 
         self.assertEqual(data["firstname"], customer.firstname)
 
+    def test_delete_customer(self):
+        """It should delete a single customer"""
+        # get the id of an account
+
+        customer = self._create_customers(1)[0]
+        # check to see if customer exists
+        resp = self.app.get(
+            f"{BASE_URL}/{customer.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        # delete customer id
+        resp = self.app.delete(
+            f"{BASE_URL}/{customer.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+
+        #check to see if customer should not exist
+        resp = self.app.delete(
+            f"{BASE_URL}/{customer.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    
+
     def test_get_customer_not_found(self):
         """It should not Read a Customer that is not found"""
         resp = self.app.get(f"{BASE_URL}/0")

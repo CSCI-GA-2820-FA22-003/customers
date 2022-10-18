@@ -83,17 +83,17 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_customer["country"], customer.country, "Country does not match")
         self.assertEqual(new_customer["zipcode"], customer.zipcode, "Zipcode does not match")
 
-        # self.assertEqual(
-        #     new_customer["created_at"],
-        #     str(customer.created_at),
-        #     "Date created at does not match",
-        # )
+        self.assertEqual(
+            new_customer["created_at"],
+            customer.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "Date created at does not match",
+        )
 
-        # self.assertEqual(
-        #     new_customer["updated_at"],
-        #     str(customer.updated_at),
-        #     "Date updated at does not match",
-        # )
+        self.assertEqual(
+            new_customer["updated_at"],
+            customer.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "Date updated at does not match",
+        )
 
         # Check that the location header was correct by getting it
         resp = self.app.get(location, content_type="application/json")
@@ -116,17 +116,17 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_customer["country"], customer.country, "Country does not match")
         self.assertEqual(new_customer["zipcode"], customer.zipcode, "Zipcode does not match")
 
-        # self.assertEqual(
-        #     new_customer["created_at"],
-        #     str(customer.created_at),
-        #     "Date created at does not match",
-        # )
+        self.assertEqual(
+            new_customer["created_at"],
+            customer.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "Date created at does not match",
+        )
 
-        # self.assertEqual(
-        #     new_customer["updated_at"],
-        #     str(customer.updated_at),
-        #     "Date updated at does not match",
-        # )
+        self.assertEqual(
+            new_customer["updated_at"],
+            customer.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
+            "Date updated at does not match",
+        )
 
     def test_bad_request(self):
         """It should not Create when sending the wrong data"""

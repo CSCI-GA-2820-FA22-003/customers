@@ -42,6 +42,22 @@ class TestYourResourceServer(TestCase):
         """ This runs after each test """
         pass
 
+
+
+    def _create_customers(self, count):
+        """Factory method to create customers in bulk"""
+        customers = []
+        for _ in range(count):
+            test_customer = CustomerFactory()
+            response = self.app.post(BASE_URL, json=test_customer.serialize())
+            self.assertEqual(
+                response.status_code, status.HTTP_201_CREATED, "Could not create test customer"
+            )
+            new_customer = response.get_json()
+            test_customer.id = new_customer["id"]
+            customers.append(test_customer)
+        return customers
+
     ######################################################################
     #  C U S T O M E R S   T E S T   C A S E S
     ######################################################################
@@ -140,3 +156,21 @@ class TestYourResourceServer(TestCase):
             BASE_URL, json=customer.serialize(), content_type="test/html"
         )
         self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+
+    def test_get_customer(self):
+        """It should Read a single customer"""
+        # get the id of an account
+
+        customer = self._create_customers(1)[0]
+        resp = self.app.get(
+            f"{BASE_URL}/{customer.id}", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+
+        self.assertEqual(data["firstname"], customer.firstname)
+
+    def test_get_customer_not_found(self):
+        """It should not Read a Customer that is not found"""
+        resp = self.app.get(f"{BASE_URL}/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND) 

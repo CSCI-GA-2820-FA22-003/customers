@@ -43,12 +43,35 @@ def create_customers():
     # Create a message to return
     message = customer.serialize()
     # Change to "get customer" when it is made
-    location_url = url_for("create_customers", customer_id=customer.id, _external=True)
+    location_url = url_for("get_customer", customer_id=customer.id, _external=True)
 
     app.logger.info("Customer with ID [%s] created.", customer.id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
+
+######################################################################
+# READ A CUSTOMER
+######################################################################
+
+@app.route("/customers/<int:customer_id>", methods=["GET"])
+def get_customer(customer_id):
+    """
+    Retrieve a single Customer
+    This endpoint will return a Customer based on it's id
+    """
+    app.logger.info("Request for Customer with id: %s", customer_id)
+
+    # See if the Customer exists and abort if it doesn't
+    customer = Customer.find(customer_id)
+    if not customer:
+        abort(
+            status.HTTP_404_NOT_FOUND,
+            f"Customer with id '{customer_id}' could not be found.",
+        )
+
+    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
@@ -69,3 +92,4 @@ def init_db():
     """ Initializes the SQLAlchemy app """
     global app
     Customer.init_db(app)
+

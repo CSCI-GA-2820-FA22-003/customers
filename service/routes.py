@@ -75,6 +75,20 @@ def get_customer(customer_id):
 
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# LIST ALL CUSTOMERS
+######################################################################
+
+
+@app.route("/customers", methods=["GET"])
+def list_addresses():
+    """Returns all of the Customers"""
+    app.logger.info("Request for all Customers")
+    customer = Customer.all()
+
+    # Get the addresses for the account
+    customer_list = [x.serialize() for x in customer]
+    return make_response(jsonify(customer_list), status.HTTP_200_OK)
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

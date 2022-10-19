@@ -188,3 +188,8 @@ class TestYourResourceServer(TestCase):
         """It should not Read a Customer that is not found"""
         resp = self.app.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_method_not_supported(self):
+        """It should not allow an illegal method call"""
+        resp = self.app.put(BASE_URL, json={"not": "today"})
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)

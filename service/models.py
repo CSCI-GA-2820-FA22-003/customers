@@ -148,3 +148,13 @@ class Customer(db.Model):
         """
         logger.info("Processing firstname query for %s ...", firstname)
         return cls.query.filter(cls.firstname == firstname)
+
+    @classmethod
+    def find_by_email(cls, email):
+        """Returns the first Customer with the given email
+
+        Args:
+            email (string): the email of the Customers you want to match
+        """
+        logger.info("Processing email query for %s ...", email)
+        return cls.query.filter(cls.email == email).first()

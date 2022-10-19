@@ -139,6 +139,30 @@ class TestYourResourceServer(TestCase):
             "Date updated at does not match",
         )
 
+    def test_check_for_dupe_emails(self):
+        """It should not create a customer with the same email address as another customer"""
+
+        customer = CustomerFactory()
+        logging.debug(customer)
+        resp = self.app.post(
+            BASE_URL, json=customer.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        # Try to create a customer with the same email address as above customer
+        new_customer = CustomerFactory()
+        logging.debug(f"ID:{new_customer.id} {new_customer.lastname} {new_customer.email}")
+        new_customer.email = customer.email
+        logging.debug(f"ID:{new_customer.id} {new_customer.lastname} {new_customer.email}")
+        resp = self.app.post(
+            BASE_URL, json=new_customer.serialize(), content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_409_CONFLICT, "Duplicate email used in customer create")
+
     def test_bad_request(self):
         """It should not Create when sending the wrong data"""
         resp = self.app.post(BASE_URL, json={"name": "not enough data"})

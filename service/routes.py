@@ -89,7 +89,7 @@ def delete_customer (customer_id):
         app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     if not customer:
         abort(
-            status.HTTP_404_NOT_FOUND,
+            status.HTTP_204_NO_CONTENT,
             f"Customer with id '{customer_id}' could not be found .",
         )
     return "", status.HTTP_204_NO_CONTENT

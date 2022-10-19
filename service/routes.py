@@ -75,6 +75,19 @@ def get_customer(customer_id):
 
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# DELETE A CUSTOMER
+######################################################################
+
+@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+def delete_customer (customer_id):
+    """ Delete a Customer """
+    app.logger.info("Request to delete customer with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if customer:
+        customer.delete()
+        app.logger.info("Customer with ID [%s] delete complete.", customer_id)
+    return "", status.HTTP_204_NO_CONTENT
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

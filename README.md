@@ -50,7 +50,7 @@ get_customer      GET      /customers/<customer_id>
 update_customer   PUT      /customers/<account_id>
 delete_customer   DELETE   /customers/<account_id>
 ```
-The test cases have 95% test coverage and can be run with nosetests
+The test cases have 97% test coverage and can be run with nosetests
 
 ## License
 

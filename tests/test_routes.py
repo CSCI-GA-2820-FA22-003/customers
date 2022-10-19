@@ -186,12 +186,6 @@ class TestYourResourceServer(TestCase):
             f"{BASE_URL}/{customer.id}", content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-
-        #check to see if customer should not exist
-        resp = self.app.delete(
-            f"{BASE_URL}/{customer.id}", content_type="application/json"
-        )
-        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
     
 
     def test_get_customer_not_found(self):

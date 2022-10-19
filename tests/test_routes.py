@@ -65,18 +65,67 @@ class TestYourResourceServer(TestCase):
     def test_update_customer(self):
         """It should Update a existing customer's data"""
         # create an Account to update
-        test_account = CustomerFactory()
-        resp = self.app.post(BASE_URL, json=test_account.serialize())
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        customer = CustomerFactory()
+        resp = self.app.post(BASE_URL, json=customer.serialize(), content_type="application/json")
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
 
-        # update the pet
         new_customer = resp.get_json()
-        new_customer["name"] = "Happy-Happy Joy-Joy"
+        # update the customer details
+        new_customer["firstname"] = "Something-WICKED"
+        new_customer["last_name"] = "this-way-comes"
+        new_customer["email"] = "wicked@maze-runner.com"
+        new_customer["phone"] = "+19998887777"
+        new_customer["street_line1"] = "World In Catastrophe: KillZone Experiment Department"
+        new_customer["street_line2"] = "Nowhere you wanna be"
+        new_customer["city"] = "UNKNOWN"
+        new_customer["state"] = "Alaska"
+        new_customer["country"] = "The United States of America"
+        new_customer["zipcode"] = "XXXXX"
+        # new_customer["updated_at"] = ""
         new_customer_id = new_customer["id"]
         resp = self.app.put(f"{BASE_URL}/{new_customer_id}", json=new_customer)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
         updated_customer = resp.get_json()
-        self.assertEqual(updated_customer["name"], "Happy-Happy Joy-Joy")
+        self.assertEqual(
+            updated_customer["firstname"], new_customer["firstname"], "First names do not match"
+        )
+        self.assertEqual(
+            updated_customer["lastname"], new_customer["lastname"], "Last names do not match"
+        )
+        self.assertEqual(
+            updated_customer["email"], new_customer["email"], "Email does not match"
+        )
+        self.assertEqual(
+            updated_customer["phone"], new_customer["phone"], "Phone number does not match"
+        )
+        self.assertEqual(
+            updated_customer["street_line1"], new_customer["street_line1"],
+            "Street line 1 does not match"
+        )
+        self.assertEqual(
+            updated_customer["street_line2"], new_customer["street_line2"],
+            "Street line 2 does not match"
+        )
+        self.assertEqual(
+            updated_customer["city"], new_customer["city"], "City does not match"
+        )
+        self.assertEqual(
+            updated_customer["state"], new_customer["state"], "State does not match"
+        )
+        self.assertEqual(
+            updated_customer["country"], new_customer["country"], "Country does not match"
+        )
+        self.assertEqual(
+            updated_customer["zipcode"], new_customer["zipcode"], "Zipcode does not match"
+        )
+
+
+    def test_update_customer_not_found(self):
+        """It should get error code 404 when trying to update a customer that does not exist"""
+        resp = self.app.put(f"{BASE_URL}/0", json={"not":"today"})
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
 
     def test_create_customer(self):
         """ It should create a customer"""

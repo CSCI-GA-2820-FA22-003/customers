@@ -91,6 +91,50 @@ def list_addresses():
     return make_response(jsonify(customer_list), status.HTTP_200_OK)
 
 ######################################################################
+# DELETE A CUSTOMER
+######################################################################
+
+
+@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+def delete_customer(customer_id):
+    """ Delete a Customer """
+    app.logger.info("Request to delete customer with id: %s", customer_id)
+    customer = Customer.find(customer_id)
+    if customer:
+        customer.delete()
+        app.logger.info("Customer with ID [%s] delete complete.", customer_id)
+    return "", status.HTTP_204_NO_CONTENT
+
+######################################################################
+# REST API TO UPDATE CUSTOMER'S PERSONAL DATA
+######################################################################
+
+
+@app.route("/customers/<int:customer_id>", methods=["PUT"])
+def update_customer(customer_id):
+    """
+    Update a customer's personal data.
+    This endpoint will update a customer's data based on the body that is posted
+    """
+    app.logger.info("Request to update the customer with id: %s", customer_id)
+    check_content_type("application/json")
+
+    # See if the account exists and abort if it doesn't
+    customer_account = Customer.find(customer_id)
+    if not customer_account:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
+        )
+
+    # Update from the json in the body of the request
+    customer_account.deserialize(request.get_json())
+    customer_account.id = customer_id
+    customer_account.update()
+
+    return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
+
+
+######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
 

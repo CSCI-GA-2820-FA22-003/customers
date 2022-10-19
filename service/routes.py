@@ -4,6 +4,7 @@ My Service
 Describe what your service does here
 """
 
+# from tkinter import E
 from flask import jsonify, request, url_for, make_response, abort
 from service.models import Customer
 from .common import status  # HTTP Status Codes
@@ -13,8 +14,44 @@ from . import app
 
 
 ######################################################################
+#  U T I L I T Y   F U N C T I O N S
+######################################################################
+
+def check_for_dupe_emails(customer_email):
+    """
+    Retrieve a single Customer by email address
+    This endpoint will return a Customer based on it's email
+    """
+    app.logger.info("Request for Customer with email: %s", customer_email)
+    # See if the Customer exists
+    customer = Customer.find_by_email(customer_email)
+    if customer:
+        return True
+    return False
+
+
+def check_content_type(media_type):
+    """Checks that the media type is correct"""
+    content_type = request.headers.get("Content-Type")
+    if content_type and content_type == media_type:
+        return
+    app.logger.error("Invalid Content-Type: %s", content_type)
+    abort(
+        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+        "Content-Type must be {}".format(media_type),
+    )
+
+
+def init_db():
+    """ Initializes the SQLAlchemy app """
+    global app
+    Customer.init_db(app)
+
+######################################################################
 # GET INDEX
 ######################################################################
+
+
 @app.route("/")
 def index():
     """ Root URL response """
@@ -40,6 +77,12 @@ def create_customers():
     # Create the account
     customer = Customer()
     customer.deserialize(request.get_json())
+    if check_for_dupe_emails(customer.email):
+        abort(
+            status.HTTP_409_CONFLICT,
+            f"Another Customer with email '{customer.email}' found.",
+        )
+
     customer.create()
 
     # Create a message to return
@@ -132,26 +175,3 @@ def update_customer(customer_id):
     customer_account.update()
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
-
-
-######################################################################
-#  U T I L I T Y   F U N C T I O N S
-######################################################################
-
-
-def check_content_type(media_type):
-    """Checks that the media type is correct"""
-    content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
-        return
-    app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
-
-
-def init_db():
-    """ Initializes the SQLAlchemy app """
-    global app
-    Customer.init_db(app)

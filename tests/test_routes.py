@@ -62,7 +62,6 @@ class TestYourResourceServer(TestCase):
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
-
     def test_create_customer(self):
         """ It should create a customer"""
         customer = CustomerFactory()
@@ -231,5 +230,5 @@ class TestYourResourceServer(TestCase):
 
     def test_update_customer_not_found(self):
         """It should get error code 404 when trying to update a customer that does not exist"""
-        resp = self.app.put(f"{BASE_URL}/0", json={"not":"today"})
+        resp = self.app.put(f"{BASE_URL}/0", json={"not": "today"})
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

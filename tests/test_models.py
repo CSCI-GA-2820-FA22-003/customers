@@ -16,6 +16,8 @@ DATABASE_URI = os.getenv(
 ######################################################################
 #  C U S T O M E R   M O D E L   T E S T   C A S E S
 ######################################################################
+
+
 class TestCustomer(unittest.TestCase):
     """ Test Cases for Customer Model """
 
@@ -48,7 +50,18 @@ class TestCustomer(unittest.TestCase):
 
     def test_create_a_customer(self):
         """ It should Create an Customer and assert that it exists """
-        customer = Customer(firstname="Katerine",lastname="Perdomo",email="kate@email.com",phone="XXXXXX",street_line1="casa",street_line2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(
+            firstname="Katerine",
+            lastname="Perdomo",
+            email="kate@email.com",
+            phone="XXXXXX",
+            street_line1="casa",
+            street_line2="casa",
+            city="Bogota",
+            state='CU',
+            country="Colombia",
+            zipcode="11023"
+        )
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
         self.assertEqual(customer.firstname, "Katerine")
@@ -65,7 +78,18 @@ class TestCustomer(unittest.TestCase):
         """It should Create a customer and add it to the database"""
         customers = Customer.all()
         self.assertEqual(customers, [])
-        customer = Customer(firstname="Katerine",lastname="Perdomo",email="kate@email.com",phone="+1-258-937",street_line1="casa",street_line2="casa",city="Bogota",state='CU',country="Colombia",zipcode="11023")
+        customer = Customer(
+            firstname="Katerine",
+            lastname="Perdomo",
+            email="kate@email.com",
+            phone="+1-258-937",
+            street_line1="casa",
+            street_line2="casa",
+            city="Bogota",
+            state='CU',
+            country="Colombia",
+            zipcode="11023"
+        )
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
         customer.create()
@@ -73,7 +97,7 @@ class TestCustomer(unittest.TestCase):
         self.assertIsNotNone(customer.id)
         customers = Customer.all()
         self.assertEqual(len(customers), 1)
-    
+
     def test_read_a_customer(self):
         """It should Read a Customer"""
         customer = CustomerFactory()
@@ -115,7 +139,7 @@ class TestCustomer(unittest.TestCase):
         logging.debug(customer)
         customer.id = None
         self.assertRaises(DataValidationError, customer.update)
-    
+
     def test_delete_a_customer(self):
         """It should Delete a Customer"""
         customer = CustomerFactory()
@@ -124,7 +148,7 @@ class TestCustomer(unittest.TestCase):
         # delete the customer and make sure it isn't in the database
         customer.delete()
         self.assertEqual(len(Customer.all()), 0)
-    
+
     def test_list_all_customers(self):
         """It should List all Customers in the database"""
         customers = Customer.all()
@@ -151,11 +175,11 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["street_line2"], customer.street_line2)
         self.assertEqual(data["city"], customer.city)
         self.assertEqual(data["state"], customer.state)
-        self.assertEqual(data["country"], customer.country) 
-        self.assertEqual(data["zipcode"], customer.zipcode) 
-        self.assertEqual(data["created_at"], customer.created_at)  
-        self.assertEqual(data["updated_at"], customer.updated_at)  
-    
+        self.assertEqual(data["country"], customer.country)
+        self.assertEqual(data["zipcode"], customer.zipcode)
+        self.assertEqual(data["created_at"], customer.created_at)
+        self.assertEqual(data["updated_at"], customer.updated_at)
+
     def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
         data = CustomerFactory().serialize()

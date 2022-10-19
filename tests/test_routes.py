@@ -181,7 +181,6 @@ class TestYourResourceServer(TestCase):
             f"{BASE_URL}/{customer.id}", content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-    
 
     def test_get_customer_not_found(self):
         """It should not Read a Customer that is not found"""

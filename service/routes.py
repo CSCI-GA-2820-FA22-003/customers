@@ -79,8 +79,9 @@ def get_customer(customer_id):
 # DELETE A CUSTOMER
 ######################################################################
 
+
 @app.route("/customers/<int:customer_id>", methods=["DELETE"])
-def delete_customer (customer_id):
+def delete_customer(customer_id):
     """ Delete a Customer """
     app.logger.info("Request to delete customer with id: %s", customer_id)
     customer = Customer.find(customer_id)
@@ -92,6 +93,8 @@ def delete_customer (customer_id):
 ######################################################################
 # REST API TO UPDATE CUSTOMER'S PERSONAL DATA
 ######################################################################
+
+
 @app.route("/customers/<int:customer_id>", methods=["PUT"])
 def update_customer(customer_id):
     """

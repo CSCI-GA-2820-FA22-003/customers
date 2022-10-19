@@ -5,9 +5,14 @@ Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
   coverage report -m
 """
+# from email.mime import application
+# import json
+# import os
 import logging
 from unittest import TestCase
+# from unittest.mock import MagicMock, patch
 from service import app
+from service.models import Customer, db
 from service.common import status
 from tests.factories import CustomerFactory  # HTTP Status Codes
 
@@ -33,11 +38,17 @@ class TestYourResourceServer(TestCase):
 
     def setUp(self):
         """ This runs before each test """
+        db.session.query(Customer).delete()  # clean up the last tests
+        db.session.commit()
         self.app = app.test_client()
 
     def tearDown(self):
         """ This runs after each test """
-        pass
+        db.session.remove()
+
+    ######################################################################
+    #  H E L P E R   M E T H O D S
+    ######################################################################
 
     def _create_customers(self, count):
         """Factory method to create customers in bulk"""
@@ -61,6 +72,14 @@ class TestYourResourceServer(TestCase):
         """ It should call the home page """
         resp = self.app.get("/")
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+    def test_get_customer_list(self):
+        """It should Get a list of Customers"""
+        self._create_customers(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
     def test_create_customer(self):
         """ It should create a customer"""
@@ -186,6 +205,11 @@ class TestYourResourceServer(TestCase):
         """It should not Read a Customer that is not found"""
         resp = self.app.get(f"{BASE_URL}/0")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_method_not_supported(self):
+        """It should not allow an illegal method call"""
+        resp = self.app.put(BASE_URL, json={"not": "today"})
+        self.assertEqual(resp.status_code, status.HTTP_405_METHOD_NOT_ALLOWED)
 
     def test_update_customer(self):
         """It should Update a existing customer's data"""

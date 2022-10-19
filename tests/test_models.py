@@ -202,6 +202,21 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.updated_at, data["updated_at"])
 
     def test_deserialize_with_key_error(self):
-        """It should not Deserialize an account with a KeyError"""
+        """It should not Deserialize a customer with a KeyError"""
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, {})
+
+    def test_deserialize_with_type_error(self):
+        """It should not Deserialize a customer with a TypeError"""
+        customer = Customer()
+        self.assertRaises(DataValidationError, customer.deserialize, [])
+
+    def test_find_by_name(self):
+        """It should Find an Customer by firstname"""
+        customer = CustomerFactory()
+        customer.create()
+
+        # Fetch it back by firstname
+        same_customer = Customer.find_by_name(customer.firstname)[0]
+        self.assertEqual(same_customer.id, customer.id)
+        self.assertEqual(same_customer.firstname, customer.firstname)

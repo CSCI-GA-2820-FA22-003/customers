@@ -47,8 +47,8 @@ index             GET      /
 list_customers     GET      /customers
 create_customers   POST     /customers
 get_customer      GET      /customers/<customer_id>
-update_customer   PUT      /customers/<account_id>
-delete_customer   DELETE   /customers/<account_id>
+update_customer   PUT      /customers/<customer_id>
+delete_customer   DELETE   /customers/<customer_id>
 ```
 The test cases have 97% test coverage and can be run with nosetests
 

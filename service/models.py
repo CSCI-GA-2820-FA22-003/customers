@@ -42,10 +42,10 @@ class Customer(db.Model):
     zipcode = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    acc_status = db.Column(db.Boolean, default=True, nullable=False)
+    acc_active = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        cust = "<Customer %r id=[%s] acc_status=[%s]>" % (self.firstname, self.id, self.acc_status)
+        cust = "<Customer %r id=[%s] acc_active=[%s]>" % (self.firstname, self.id, self.acc_active)
         return cust
 
     def create(self):
@@ -88,7 +88,7 @@ class Customer(db.Model):
             "zipcode": self.zipcode,
             "created_at": self.created_at,
             "updated_at": self.updated_at,
-            "acc_status": self.acc_status
+            "acc_active": self.acc_active
         }
 
     def deserialize(self, data):
@@ -111,7 +111,7 @@ class Customer(db.Model):
             self.zipcode = data["zipcode"]
             self.created_at = data["created_at"]
             self.updated_at = data["updated_at"]
-            self.acc_status = data["acc_status"]
+            self.acc_active = data["acc_active"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])

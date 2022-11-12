@@ -60,7 +60,8 @@ class TestCustomer(unittest.TestCase):
             city="Bogota",
             state='CU',
             country="Colombia",
-            zipcode="11023"
+            zipcode="11023",
+            status=1
         )
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
@@ -73,6 +74,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.state, "CU")
         self.assertEqual(customer.country, "Colombia")
         self.assertEqual(customer.zipcode, "11023")
+        self.assertEqual(customer.status, 1)
 
     def test_add_a_customer(self):
         """It should Create a customer and add it to the database"""
@@ -179,6 +181,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["zipcode"], customer.zipcode)
         self.assertEqual(data["created_at"], customer.created_at)
         self.assertEqual(data["updated_at"], customer.updated_at)
+        self.assertEqual(data["status"], customer.status)
 
     def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
@@ -200,6 +203,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.zipcode, data["zipcode"])
         self.assertEqual(customer.created_at, data["created_at"])
         self.assertEqual(customer.updated_at, data["updated_at"])
+        self.assertEqual(customer.status, data["status"])
 
     def test_deserialize_with_key_error(self):
         """It should not Deserialize a customer with a KeyError"""

@@ -3,13 +3,8 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
-# from email.policy import default
 import logging
-# from time import timezone
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
-# from sqlalchemy import func
 
 logger = logging.getLogger("flask.app")
 
@@ -40,9 +35,14 @@ class Customer(db.Model):
     state = db.Column(db.String(46), nullable=False)
     country = db.Column(db.String(93), nullable=False)
     zipcode = db.Column(db.String(20), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    acc_active = db.Column(db.Boolean, default=True, nullable=False)
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.func.now(),
+        server_onupdate=db.func.now()
+        )
+    acc_active = db.Column(db.Boolean, server_default=db.true(), nullable=False)
 
     def __repr__(self):
         cust = "<Customer %r id=[%s] acc_active=[%s]>" % (self.firstname, self.id, self.acc_active)
@@ -109,9 +109,9 @@ class Customer(db.Model):
             self.state = data["state"]
             self.country = data["country"]
             self.zipcode = data["zipcode"]
-            self.created_at = data["created_at"]
-            self.updated_at = data["updated_at"]
-            self.acc_active = data["acc_active"]
+            self.created_at = data.get("created_at")
+            self.updated_at = data.get("updated_at")
+            self.acc_active = data.get("acc_active")
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])

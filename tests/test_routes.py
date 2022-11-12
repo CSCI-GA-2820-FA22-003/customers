@@ -15,6 +15,7 @@ from service import app
 from service.models import Customer, db
 from service.common import status
 from tests.factories import CustomerFactory  # HTTP Status Codes
+from urllib.parse import quote_plus
 
 BASE_URL = "/customers"
 
@@ -297,3 +298,46 @@ class TestYourResourceServer(TestCase):
         """It should get error code 404 when trying to update a customer that does not exist"""
         resp = self.app.put(f"{BASE_URL}/0", json={"not": "today"})
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_get_customers_by_lastname(self):
+        """It should return all customers with the same lastname"""
+
+        lastname_to_use = "Merrick-Thirlway"
+        num_customers = 2
+
+        customer_1 = CustomerFactory()
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.lastname}")
+        customer_1.lastname = lastname_to_use
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.lastname}")
+        resp = self.app.post(
+            BASE_URL, json=customer_1.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        customer_2 = CustomerFactory()
+        logging.debug(f"ID:{customer_2.id} Cust 2: {customer_2.lastname}")
+        customer_2.lastname = lastname_to_use
+        logging.debug(f"ID:{customer_2.id} Cust 2: {customer_2.lastname}")
+        resp = self.app.post(
+            BASE_URL, json=customer_2.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        response = self.app.get(
+            BASE_URL,
+            query_string=f"lastname={quote_plus(lastname_to_use)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), num_customers)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["lastname"], lastname_to_use)

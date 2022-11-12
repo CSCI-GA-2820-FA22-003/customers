@@ -42,9 +42,11 @@ class Customer(db.Model):
     zipcode = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    acc_status = db.Column(db.Boolean, default=True, nullable=False)
 
     def __repr__(self):
-        return "<Customer %r id=[%s]>" % (self.firstname, self.id)
+        cust = "<Customer %r id=[%s] acc_status=[%s]>" % (self.firstname, self.id, self.acc_status)
+        return cust
 
     def create(self):
         """
@@ -72,20 +74,22 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.id,
-                "firstname": self.firstname,
-                "lastname": self.lastname,
-                "email": self.email,
-                "phone": self.phone,
-                "street_line1": self.street_line1,
-                "street_line2": self.street_line2,
-                "city": self.city,
-                "state": self.state,
-                "country": self.country,
-                "zipcode": self.zipcode,
-                "created_at": self.created_at,
-                "updated_at": self.updated_at
-                }
+        return {
+            "id": self.id,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email,
+            "phone": self.phone,
+            "street_line1": self.street_line1,
+            "street_line2": self.street_line2,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "zipcode": self.zipcode,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "acc_status": self.acc_status
+        }
 
     def deserialize(self, data):
         """
@@ -107,6 +111,7 @@ class Customer(db.Model):
             self.zipcode = data["zipcode"]
             self.created_at = data["created_at"]
             self.updated_at = data["updated_at"]
+            self.acc_status = data["acc_status"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])

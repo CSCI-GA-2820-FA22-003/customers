@@ -254,7 +254,6 @@ class TestYourResourceServer(TestCase):
         new_customer["state"] = "Alaska"
         new_customer["country"] = "The United States of America"
         new_customer["zipcode"] = "XXXXX"
-        # new_customer["updated_at"] = ""
         new_customer_id = new_customer["id"]
         resp = self.app.put(f"{BASE_URL}/{new_customer_id}", json=new_customer)
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -306,7 +305,7 @@ class TestYourResourceServer(TestCase):
             BASE_URL, json=customer.serialize(), content_type="application/json"
         )
 
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account created")
         # Make sure location header is set
         location = resp.headers.get("Location", None)
         self.assertIsNotNone(location)
@@ -324,3 +323,10 @@ class TestYourResourceServer(TestCase):
         updated_customer = resp.get_json()
         self.assertEqual(new_customer["id"], updated_customer["id"])
         self.assertFalse(updated_customer["acc_active"])
+
+    def test_deactivate_customer_account_not_found(self):
+        """It should not Get a Customer thats not found in deactivate customer"""
+        resp = self.app.delete(
+            f"{BASE_URL}/0/active", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)

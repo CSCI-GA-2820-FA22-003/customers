@@ -230,4 +230,3 @@ class TestCustomer(unittest.TestCase):
         returned_customer = Customer.find_by_lastname(customer.lastname)[0]
         self.assertEqual(returned_customer.id, customer.id)
         self.assertEqual(returned_customer.lastname, customer.lastname)
-        

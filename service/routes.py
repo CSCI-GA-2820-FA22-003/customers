@@ -153,11 +153,17 @@ def get_customer(customer_id):
 def list_customers():
     """Returns all of the Customers"""
     app.logger.info("Request for all Customers")
-    customer = Customer.all()
+    customers = []
+    lastname = request.args.get("lastname")
+    if lastname:
+        customers = Customer.find_by_lastname(lastname)
+    else:
+        customers = Customer.all()
 
-    # Get the addresses for the account
-    customer_list = [x.serialize() for x in customer]
-    return make_response(jsonify(customer_list), status.HTTP_200_OK)
+    results = [customer.serialize() for customer in customers]
+    app.logger.info("Returning %d customers", len(results))
+    return jsonify(results), status.HTTP_200_OK
+
 
 ######################################################################
 # DELETE A CUSTOMER

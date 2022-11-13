@@ -177,7 +177,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(len(Customer.all()), 0)
 
     def test_list_all_customers(self):
-        """It should List all Customers in the database"""
+        """It should List all Customers' in the database"""
         customers = Customer.all()
         self.assertEqual(customers, [])
         num_new_customers = 5

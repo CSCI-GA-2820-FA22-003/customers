@@ -179,7 +179,7 @@ class Customer(db.Model):
         """Returns all Customers with the given city
 
         Args:
-            email (string): the email of the Customers you want to match
+            city (string): the city of the Customers you want to match
         """
         logger.info("Processing city query for %s ...", city)
         return cls.query.filter(cls.city == city)

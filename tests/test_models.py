@@ -250,7 +250,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(same_customer.id, customer.id)
         self.assertEqual(same_customer.firstname, customer.firstname)
 
-    def test_find_by_lastname(self):
+    def test_(self):
         """It should Find an Customer by lastname"""
         customer = CustomerFactory()
         customer.create()

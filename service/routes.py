@@ -155,11 +155,13 @@ def list_customers():
     app.logger.info("Request for all Customers")
     customers = []
     lastname = request.args.get("lastname")
+    city = request.args.get("city")
     if lastname:
         customers = Customer.find_by_lastname(lastname)
+    elif city:
+        customers = Customer.find_by_city(city)
     else:
         customers = Customer.all()
-
     results = [customer.serialize() for customer in customers]
     app.logger.info("Returning %d customers", len(results))
     return jsonify(results), status.HTTP_200_OK

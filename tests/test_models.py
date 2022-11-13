@@ -259,3 +259,13 @@ class TestCustomer(unittest.TestCase):
         returned_customer = Customer.find_by_lastname(customer.lastname)[0]
         self.assertEqual(returned_customer.id, customer.id)
         self.assertEqual(returned_customer.lastname, customer.lastname)
+    
+    def test_find_by_city(self):
+        """It should Find an Customer by city"""
+        customer = CustomerFactory()
+        customer.create()
+
+        # Fetch ir back by city
+        returned_customer = Customer.find_by_city(customer.id)[0]
+        self.assertEqual(returned_customer.id, customer.id)
+        self.assertEqual(returned_customer.city, customer.city)

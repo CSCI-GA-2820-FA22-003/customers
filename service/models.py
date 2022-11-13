@@ -173,3 +173,13 @@ class Customer(db.Model):
         """
         logger.info("Processing lastname query for %s ...", lastname)
         return cls.query.filter(cls.lastname == lastname)
+    
+    @classmethod
+    def find_by_city(cls, city):
+        """Returns all Customers with the given city
+
+        Args:
+            email (string): the email of the Customers you want to match
+        """
+        logger.info("Processing city query for %s ...", city)
+        return cls.query.filter(cls.city == city)

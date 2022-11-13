@@ -297,3 +297,30 @@ class TestYourResourceServer(TestCase):
         """It should get error code 404 when trying to update a customer that does not exist"""
         resp = self.app.put(f"{BASE_URL}/0", json={"not": "today"})
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+    def test_deactivate_customer_account(self):
+        """It should deactivate a customer's account"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        resp = self.app.post(
+            BASE_URL, json=customer.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        # Check the data is correct
+        new_customer = resp.get_json()
+        self.assertTrue(new_customer["acc_active"])
+
+        # Check to see the route sets acc_active to false
+        resp = self.app.delete(
+            f"{BASE_URL}/{new_customer['id']}/active", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        updated_customer = resp.get_json()
+        self.assertEqual(new_customer["id"], updated_customer["id"])
+        self.assertFalse(updated_customer["acc_active"])

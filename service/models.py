@@ -3,13 +3,8 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
-# from email.policy import default
 import logging
-# from time import timezone
-from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
-
-# from sqlalchemy import func
 
 logger = logging.getLogger("flask.app")
 
@@ -40,11 +35,18 @@ class Customer(db.Model):
     state = db.Column(db.String(46), nullable=False)
     country = db.Column(db.String(93), nullable=False)
     zipcode = db.Column(db.String(20), nullable=False)
-    created_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
-    updated_at = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    created_at = db.Column(db.DateTime, server_default=db.func.now(), nullable=False)
+    updated_at = db.Column(
+        db.DateTime,
+        nullable=False,
+        server_default=db.func.now(),
+        server_onupdate=db.func.now()
+        )
+    acc_active = db.Column(db.Boolean, server_default=db.true(), nullable=False)
 
     def __repr__(self):
-        return "<Customer %r id=[%s]>" % (self.firstname, self.id)
+        cust = "<Customer %r id=[%s] acc_active=[%s]>" % (self.firstname, self.id, self.acc_active)
+        return cust
 
     def create(self):
         """
@@ -72,20 +74,22 @@ class Customer(db.Model):
 
     def serialize(self):
         """ Serializes a Customer into a dictionary """
-        return {"id": self.id,
-                "firstname": self.firstname,
-                "lastname": self.lastname,
-                "email": self.email,
-                "phone": self.phone,
-                "street_line1": self.street_line1,
-                "street_line2": self.street_line2,
-                "city": self.city,
-                "state": self.state,
-                "country": self.country,
-                "zipcode": self.zipcode,
-                "created_at": self.created_at,
-                "updated_at": self.updated_at
-                }
+        return {
+            "id": self.id,
+            "firstname": self.firstname,
+            "lastname": self.lastname,
+            "email": self.email,
+            "phone": self.phone,
+            "street_line1": self.street_line1,
+            "street_line2": self.street_line2,
+            "city": self.city,
+            "state": self.state,
+            "country": self.country,
+            "zipcode": self.zipcode,
+            "created_at": self.created_at,
+            "updated_at": self.updated_at,
+            "acc_active": self.acc_active
+        }
 
     def deserialize(self, data):
         """
@@ -105,8 +109,9 @@ class Customer(db.Model):
             self.state = data["state"]
             self.country = data["country"]
             self.zipcode = data["zipcode"]
-            self.created_at = data["created_at"]
-            self.updated_at = data["updated_at"]
+            self.created_at = data.get("created_at")
+            self.updated_at = data.get("updated_at")
+            self.acc_active = data.get("acc_active")
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Customer: missing " + error.args[0])
@@ -140,7 +145,7 @@ class Customer(db.Model):
         return cls.query.get(by_id)
 
     @classmethod
-    def find_by_name(cls, firstname):
+    def find_by_firstname(cls, firstname):
         """Returns all Customers with the given firstname
 
         Args:
@@ -158,3 +163,13 @@ class Customer(db.Model):
         """
         logger.info("Processing email query for %s ...", email)
         return cls.query.filter(cls.email == email).first()
+
+    @classmethod
+    def find_by_lastname(cls, lastname):
+        """Returns all Customers with the given lastname
+
+        Args:
+            lastname (string): the lastname of the Customers you want to match
+        """
+        logger.info("Processing lastname query for %s ...", lastname)
+        return cls.query.filter(cls.lastname == lastname)

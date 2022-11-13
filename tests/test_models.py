@@ -60,7 +60,8 @@ class TestCustomer(unittest.TestCase):
             city="Bogota",
             state='CU',
             country="Colombia",
-            zipcode="11023"
+            zipcode="11023",
+            acc_active=True
         )
         self.assertTrue(customer is not None)
         self.assertEqual(customer.id, None)
@@ -73,6 +74,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.state, "CU")
         self.assertEqual(customer.country, "Colombia")
         self.assertEqual(customer.zipcode, "11023")
+        self.assertTrue(customer.acc_active)
 
     def test_add_a_customer(self):
         """It should Create a customer and add it to the database"""
@@ -97,6 +99,31 @@ class TestCustomer(unittest.TestCase):
         self.assertIsNotNone(customer.id)
         customers = Customer.all()
         self.assertEqual(len(customers), 1)
+
+    def test_new_customer_acc_active_is_true(self):
+        """It should Create a customer with the default account status of true"""
+        customers = Customer.all()
+        self.assertEqual(customers, [])
+        customer = Customer(
+            firstname="Katerine",
+            lastname="Perdomo",
+            email="kate@email.com",
+            phone="+1-258-937",
+            street_line1="casa",
+            street_line2="casa",
+            city="Bogota",
+            state='CU',
+            country="Colombia",
+            zipcode="11023"
+        )
+        self.assertTrue(customer is not None)
+        self.assertEqual(customer.id, None)
+        customer.create()
+        # Assert that it was assigned an id and shows up in the database
+        self.assertIsNotNone(customer.id)
+        returned_customer = Customer.all()
+        self.assertEqual(len(returned_customer), 1)
+        self.assertTrue(returned_customer[0].acc_active)
 
     def test_read_a_customer(self):
         """It should Read a Customer"""
@@ -179,6 +206,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["zipcode"], customer.zipcode)
         self.assertEqual(data["created_at"], customer.created_at)
         self.assertEqual(data["updated_at"], customer.updated_at)
+        self.assertEqual(data["acc_active"], customer.acc_active)
 
     def test_deserialize_a_customer(self):
         """It should de-serialize a Customer"""
@@ -200,6 +228,7 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.zipcode, data["zipcode"])
         self.assertEqual(customer.created_at, data["created_at"])
         self.assertEqual(customer.updated_at, data["updated_at"])
+        self.assertEqual(customer.acc_active, data["acc_active"])
 
     def test_deserialize_with_key_error(self):
         """It should not Deserialize a customer with a KeyError"""
@@ -211,12 +240,22 @@ class TestCustomer(unittest.TestCase):
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, [])
 
-    def test_find_by_name(self):
+    def test_find_by_firstname(self):
         """It should Find an Customer by firstname"""
         customer = CustomerFactory()
         customer.create()
 
         # Fetch it back by firstname
-        same_customer = Customer.find_by_name(customer.firstname)[0]
+        same_customer = Customer.find_by_firstname(customer.firstname)[0]
         self.assertEqual(same_customer.id, customer.id)
         self.assertEqual(same_customer.firstname, customer.firstname)
+
+    def test_find_by_lastname(self):
+        """It should Find an Customer by lastname"""
+        customer = CustomerFactory()
+        customer.create()
+
+        # Fetch it back by firstname
+        returned_customer = Customer.find_by_lastname(customer.lastname)[0]
+        self.assertEqual(returned_customer.id, customer.id)
+        self.assertEqual(returned_customer.lastname, customer.lastname)

@@ -145,7 +145,7 @@ class Customer(db.Model):
         return cls.query.get(by_id)
 
     @classmethod
-    def find_by_name(cls, firstname):
+    def find_by_firstname(cls, firstname):
         """Returns all Customers with the given firstname
 
         Args:
@@ -163,3 +163,13 @@ class Customer(db.Model):
         """
         logger.info("Processing email query for %s ...", email)
         return cls.query.filter(cls.email == email).first()
+
+    @classmethod
+    def find_by_lastname(cls, lastname):
+        """Returns all Customers with the given lastname
+
+        Args:
+            lastname (string): the lastname of the Customers you want to match
+        """
+        logger.info("Processing lastname query for %s ...", lastname)
+        return cls.query.filter(cls.lastname == lastname)

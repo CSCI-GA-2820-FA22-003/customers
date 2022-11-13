@@ -266,6 +266,6 @@ class TestCustomer(unittest.TestCase):
         customer.create()
 
         # Fetch ir back by city
-        returned_customer = Customer.find_by_city(customer.id)[0]
+        returned_customer = Customer.find_by_city(customer.city)[0]
         self.assertEqual(returned_customer.id, customer.id)
         self.assertEqual(returned_customer.city, customer.city)

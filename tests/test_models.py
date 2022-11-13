@@ -211,7 +211,7 @@ class TestCustomer(unittest.TestCase):
         customer = Customer()
         self.assertRaises(DataValidationError, customer.deserialize, [])
 
-    def find_by_firstname(self):
+    def test_find_by_firstname(self):
         """It should Find an Customer by firstname"""
         customer = CustomerFactory()
         customer.create()
@@ -230,3 +230,4 @@ class TestCustomer(unittest.TestCase):
         returned_customer = Customer.find_by_lastname(customer.lastname)[0]
         self.assertEqual(returned_customer.id, customer.id)
         self.assertEqual(returned_customer.lastname, customer.lastname)
+        

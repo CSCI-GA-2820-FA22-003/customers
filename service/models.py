@@ -173,7 +173,7 @@ class Customer(db.Model):
         """
         logger.info("Processing lastname query for %s ...", lastname)
         return cls.query.filter(cls.lastname == lastname)
-    
+
     @classmethod
     def find_by_city(cls, city):
         """Returns all Customers with the given city

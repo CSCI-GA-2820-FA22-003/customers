@@ -249,7 +249,17 @@ class TestCustomer(unittest.TestCase):
         same_customer = Customer.find_by_firstname(customer.firstname)[0]
         self.assertEqual(same_customer.id, customer.id)
         self.assertEqual(same_customer.firstname, customer.firstname)
-    
+
+    def test_find_by_lastname(self):
+        """It should Find an Customer by lastname"""
+        customer = CustomerFactory()
+        customer.create()
+
+        # Fetch it back by firstname
+        returned_customer = Customer.find_by_lastname(customer.lastname)[0]
+        self.assertEqual(returned_customer.id, customer.id)
+        self.assertEqual(returned_customer.lastname, customer.lastname)
+
     def test_find_by_city(self):
         """It should Find an Customer by city"""
         customer = CustomerFactory()

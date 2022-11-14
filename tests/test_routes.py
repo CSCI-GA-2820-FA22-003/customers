@@ -374,7 +374,7 @@ class TestYourResourceServer(TestCase):
             f"{BASE_URL}/0/active", content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-    
+
     def test_get_customers_by_city(self):
         """It should return all customers with the same city"""
 

@@ -155,8 +155,11 @@ def list_customers():
     app.logger.info("Request for all Customers")
     customers = []
     lastname = request.args.get("lastname")
+    city = request.args.get("city")
     if lastname:
         customers = Customer.find_by_lastname(lastname)
+    elif city:
+        customers = Customer.find_by_city(city)
     else:
         customers = Customer.all()
 

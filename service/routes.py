@@ -12,10 +12,20 @@ from .common import status  # HTTP Status Codes
 # Import Flask application
 from . import app
 
+############################################################
+# H E A L T H   E N D P O I N TS
+############################################################
+
+
+# @app.route("/health")
+# def health():
+#     """Health Status"""
+#     return jsonify(dict(status="OK")), status.HTTP_200_OK
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
+
 
 def check_for_dupe_emails(customer_email):
     """

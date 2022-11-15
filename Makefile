@@ -1,6 +1,6 @@
 # These can be overidden with env vars.
 REGISTRY ?= us.icr.io
-NAMESPACE ?= nyu_devops_customers
+NAMESPACE ?= nyu_customers
 IMAGE_NAME ?= customers
 IMAGE_TAG ?= 1.0
 IMAGE ?= $(REGISTRY)/$(NAMESPACE)/$(IMAGE_NAME):$(IMAGE_TAG)
@@ -36,7 +36,6 @@ lint: ## Run the linter
 	$(info Running linting...)
 	flake8 service tests --count --select=E9,F63,F7,F82 --show-source --statistics
 	flake8 service tests --count --max-complexity=10 --max-line-length=127 --statistics
-	pylint service tests --max-line-length=127
 
 .PHONY: test
 test: ## Run the unit tests

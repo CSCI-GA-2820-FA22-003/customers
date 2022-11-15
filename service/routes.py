@@ -212,6 +212,35 @@ def update_customer(customer_id):
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
 ######################################################################
+# ACTIVATE A CUSTOMER'S ACCOUNT
+######################################################################
+
+
+@app.route("/customers/<int:customer_id>/active", methods=["PUT"])
+def activate_customer_account(customer_id):
+    """
+    Activate a customer's account
+    """
+    app.logger.info("Request to activate the customer with id: %s", customer_id)
+    check_content_type("application/json")
+
+    # See if the account exists and abort if it doesn't
+    customer_account = Customer.find(customer_id)
+    if not customer_account:
+        abort(
+            status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
+        )
+
+    customer_account.acc_active = True
+    customer_account.update()
+
+    return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
+
+
+
+
+
+######################################################################
 # DEACTIVATE A CUSTOMER'S ACCOUNT
 ######################################################################
 

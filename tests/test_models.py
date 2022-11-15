@@ -204,8 +204,6 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(data["state"], customer.state)
         self.assertEqual(data["country"], customer.country)
         self.assertEqual(data["zipcode"], customer.zipcode)
-        self.assertEqual(data["created_at"], customer.created_at)
-        self.assertEqual(data["updated_at"], customer.updated_at)
         self.assertEqual(data["acc_active"], customer.acc_active)
 
     def test_deserialize_a_customer(self):
@@ -226,8 +224,6 @@ class TestCustomer(unittest.TestCase):
         self.assertEqual(customer.city, data["city"])
         self.assertEqual(customer.country, data["country"])
         self.assertEqual(customer.zipcode, data["zipcode"])
-        self.assertEqual(customer.created_at, data["created_at"])
-        self.assertEqual(customer.updated_at, data["updated_at"])
         self.assertEqual(customer.acc_active, data["acc_active"])
 
     def test_deserialize_with_key_error(self):

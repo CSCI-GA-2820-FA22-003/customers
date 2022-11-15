@@ -125,18 +125,6 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_customer["country"], customer.country, "Country does not match")
         self.assertEqual(new_customer["zipcode"], customer.zipcode, "Zipcode does not match")
 
-        self.assertEqual(
-            new_customer["created_at"],
-            customer.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
-            "Date created at does not match",
-        )
-
-        self.assertEqual(
-            new_customer["updated_at"],
-            customer.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
-            "Date updated at does not match",
-        )
-
         # Check that the location header was correct by getting it
         resp = self.app.get(location, content_type="application/json")
         self.assertEqual(resp.status_code, status.HTTP_200_OK, "Header account not created")
@@ -157,18 +145,6 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(new_customer["state"], customer.state, "State does not match")
         self.assertEqual(new_customer["country"], customer.country, "Country does not match")
         self.assertEqual(new_customer["zipcode"], customer.zipcode, "Zipcode does not match")
-
-        self.assertEqual(
-            new_customer["created_at"],
-            customer.created_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
-            "Date created at does not match",
-        )
-
-        self.assertEqual(
-            new_customer["updated_at"],
-            customer.updated_at.strftime('%a, %d %b %Y %H:%M:%S GMT'),
-            "Date updated at does not match",
-        )
 
     def test_check_for_dupe_emails(self):
         """It should not create a customer with the same email address as another customer"""

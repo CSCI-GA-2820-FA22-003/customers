@@ -86,8 +86,6 @@ class Customer(db.Model):
             "state": self.state,
             "country": self.country,
             "zipcode": self.zipcode,
-            "created_at": self.created_at,
-            "updated_at": self.updated_at,
             "acc_active": self.acc_active
         }
 
@@ -109,8 +107,6 @@ class Customer(db.Model):
             self.state = data["state"]
             self.country = data["country"]
             self.zipcode = data["zipcode"]
-            self.created_at = data.get("created_at")
-            self.updated_at = data.get("updated_at")
             self.acc_active = data.get("acc_active")
         except KeyError as error:
             raise DataValidationError(

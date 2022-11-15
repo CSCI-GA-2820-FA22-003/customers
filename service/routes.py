@@ -34,7 +34,7 @@ def check_for_dupe_emails(customer_email):
     """
     app.logger.info("Request for Customer with email: %s", customer_email)
     # See if the Customer exists
-    customer = Customer.find_by_email(customer_email)
+    customer = Customer.find_by_email(customer_email).first()
     if customer:
         return True
     return False
@@ -166,10 +166,13 @@ def list_customers():
     customers = []
     lastname = request.args.get("lastname")
     city = request.args.get("city")
+    email = request.args.get("email")
     if lastname:
         customers = Customer.find_by_lastname(lastname)
     elif city:
         customers = Customer.find_by_city(city)
+    elif email:
+        customers = Customer.find_by_email(email)
     else:
         customers = Customer.all()
 

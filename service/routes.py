@@ -17,10 +17,11 @@ from . import app
 ############################################################
 
 
-# @app.route("/health")
-# def health():
-#     """Health Status"""
-#     return jsonify(dict(status="OK")), status.HTTP_200_OK
+@app.route("/health")
+def health():
+    """Health Status"""
+    app.logger.info("Service active, health endpoint successfully called")
+    return jsonify(dict(status="OK")), status.HTTP_200_OK
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S

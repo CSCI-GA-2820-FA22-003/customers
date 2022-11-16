@@ -158,7 +158,7 @@ class Customer(db.Model):
             email (string): the email of the Customers you want to match
         """
         logger.info("Processing email query for %s ...", email)
-        return cls.query.filter(cls.email == email).first()
+        return cls.query.filter(cls.email == email)
 
     @classmethod
     def find_by_lastname(cls, lastname):

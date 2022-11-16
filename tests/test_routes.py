@@ -404,3 +404,33 @@ class TestYourResourceServer(TestCase):
         # check the data just to be sure
         for customer in data:
             self.assertEqual(customer["city"], city_to_use)
+
+    def test_get_customer_by_email(self):
+        """It should return the customer with the given email"""
+
+        email_to_use = "something@wicked.com"
+        num_customers = 1
+
+        customer_1 = CustomerFactory()
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.email}")
+        customer_1.email = email_to_use
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.email}")
+        resp = self.app.post(
+            BASE_URL, json=customer_1.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        response = self.app.get(
+            BASE_URL,
+            query_string=f"email={quote_plus(email_to_use)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), num_customers)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["email"], email_to_use)

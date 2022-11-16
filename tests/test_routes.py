@@ -349,14 +349,14 @@ class TestYourResourceServer(TestCase):
             BASE_URL, json=customer.serialize(), content_type="application/json"
         )
 
-        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account created")
         # Make sure location header is set
         location = resp.headers.get("Location", None)
         self.assertIsNotNone(location)
 
         # Check the data is correct
         new_customer = resp.get_json()
-        self.assertFalse(new_customer["acc_active"])
+        self.assertTrue(new_customer["acc_active"])
 
         # Check to see the route sets acc_active to false
         resp = self.app.put(

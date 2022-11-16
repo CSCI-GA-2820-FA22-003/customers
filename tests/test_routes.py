@@ -69,12 +69,12 @@ class TestYourResourceServer(TestCase):
     # T E S T   C R U D  E N D P O I N T S
     ######################################################################
 
-    # def test_health(self):
-    #     """It should be healthy"""
-    #     response = self.app.get("/health")
-    #     self.assertEqual(response.status_code, status.HTTP_200_OK)
-    #     data = response.get_json()
-    #     self.assertEqual(data["status"], "OK")
+    def test_health(self):
+        """It should be healthy"""
+        response = self.app.get("/health")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(data["status"], "OK")
 
     ######################################################################
     #  C U S T O M E R S   T E S T   C A S E S

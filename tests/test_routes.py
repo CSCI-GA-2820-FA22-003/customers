@@ -311,7 +311,6 @@ class TestYourResourceServer(TestCase):
 
     def test_get_customers_by_lastname(self):
         """It should return all customers with the same lastname"""
-
         lastname_to_use = "Merrick-Thirlway"
         num_customers = 2
 
@@ -351,6 +350,40 @@ class TestYourResourceServer(TestCase):
         # check the data just to be sure
         for customer in data:
             self.assertEqual(customer["lastname"], lastname_to_use)
+
+    def test_activate_customer_account(self):
+        """It should activate a customer's account"""
+        customer = CustomerFactory()
+        logging.debug(customer)
+        resp = self.app.post(
+            BASE_URL, json=customer.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        # Check the data is correct
+        new_customer = resp.get_json()
+        self.assertTrue(new_customer["acc_active"])
+
+        # Check to see the route sets acc_active to false
+        resp = self.app.put(
+            f"{BASE_URL}/{new_customer['id']}/active", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        updated_customer = resp.get_json()
+        self.assertEqual(new_customer["id"], updated_customer["id"])
+        self.assertTrue(updated_customer["acc_active"])
+
+    def test_activate_customer_account_not_found(self):
+        """It should Get a Customer thats not found in activate customer"""
+        resp = self.app.put(
+            f"{BASE_URL}/0/active", content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_deactivate_customer_account(self):
         """It should deactivate a customer's account"""

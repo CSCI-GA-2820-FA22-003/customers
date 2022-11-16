@@ -300,7 +300,6 @@ class TestYourResourceServer(TestCase):
 
     def test_get_customers_by_lastname(self):
         """It should return all customers with the same lastname"""
-
         lastname_to_use = "Merrick-Thirlway"
         num_customers = 2
 

@@ -236,10 +236,6 @@ def activate_customer_account(customer_id):
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
-
-
-
-
 ######################################################################
 # DEACTIVATE A CUSTOMER'S ACCOUNT
 ######################################################################

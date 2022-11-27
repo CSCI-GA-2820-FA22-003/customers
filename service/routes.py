@@ -65,37 +65,39 @@ def init_db():
 
 @app.route("/")
 def index():
-    """Root URL response"""
-    app.logger.info("Request for Root URL")
-    return (
-        jsonify(
-            name="Customer Service REST API",
-            version="1.0",
-            resources={
-                "Create a customer": {
-                    "method": "POST",
-                    "url": url_for("create_customers", _external=True)
-                    },
-                "Read a customer with ID 1": {
-                    "method": "GET",
-                    "url": url_for("get_customer", customer_id=1, _external=True)
-                    },
-                "Update a customer with ID 1": {
-                    "method": "PUT",
-                    "url": url_for("update_customer", customer_id=1, _external=True)
-                },
-                "Delete a customer with ID 1": {
-                    "method": "DELETE",
-                    "url": url_for("delete_customer", customer_id=1, _external=True)
-                },
-                "List all customers": {
-                    "method": "GET",
-                    "url": url_for("list_customers", _external=True)
-                }
-            }
-        ),
-        status.HTTP_200_OK,
-    )
+    # """Root URL response"""
+    # app.logger.info("Request for Root URL")
+    # return (
+    #     jsonify(
+    #         name="Customer Service REST API",
+    #         version="1.0",
+    #         resources={
+    #             "Create a customer": {
+    #                 "method": "POST",
+    #                 "url": url_for("create_customers", _external=True)
+    #                 },
+    #             "Read a customer with ID 1": {
+    #                 "method": "GET",
+    #                 "url": url_for("get_customer", customer_id=1, _external=True)
+    #                 },
+    #             "Update a customer with ID 1": {
+    #                 "method": "PUT",
+    #                 "url": url_for("update_customer", customer_id=1, _external=True)
+    #             },
+    #             "Delete a customer with ID 1": {
+    #                 "method": "DELETE",
+    #                 "url": url_for("delete_customer", customer_id=1, _external=True)
+    #             },
+    #             "List all customers": {
+    #                 "method": "GET",
+    #                 "url": url_for("list_customers", _external=True)
+    #             }
+    #         }
+    #     ),
+    #     status.HTTP_200_OK,
+    # )
+    """Base URL for our service"""
+    return app.send_static_file("index.html")
 
 ######################################################################
 # CREATE A NEW CUSTOMER

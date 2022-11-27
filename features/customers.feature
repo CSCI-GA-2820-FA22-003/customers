@@ -16,17 +16,3 @@ Scenario: The server is running
     And I should not see "404 Not Found"
 
 # Add UI Scenarios here
-
-# Scenario: Create a Customer
-#     When I visit the "Home Page"
-#     And I set the "ID" to "4"
-#     And I set the "Firstname" to "Tom"
-#     And I set the "Lastname" to "Sawyer"
-#     And I set the "Email" to "123@gmail.com"
-#     And I set the "Street_Line1" to "102"
-#     And I set the "Street_Line2" to "XYZ St"
-#     And I set the "Phone" to "200988884"
-#     And I set the "City" to "St. Petersburg"
-#     And I set the "State" to "Missouri"
-#     And I set the "Country" to "USA"
-#     And I set the "Zipcode" to "Unknown"

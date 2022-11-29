@@ -7,24 +7,31 @@ $(function () {
     // Updates the form with data from the response
     function update_form_data(res) {
         $("#customer_id").val(res.id);
-        $("#pet_name").val(res.name);
-        $("#pet_category").val(res.category);
-        if (res.available == true) {
-            $("#pet_available").val("true");
-        } else {
-            $("#pet_available").val("false");
-        }
-        $("#pet_gender").val(res.gender);
-        $("#pet_birthday").val(res.birthday);
+        $("#customer_firstname").val(res.firstname);
+        $("#customer_lastname").val(res.lastname);
+        $("#customer_email").val(res.email);
+        $("#customer_phone").val(res.phone);
+        $("#customer_street_line1").val(res.street_line1);
+        $("#customer_street_line2").val(res.street_line2);
+        $("#customer_city").val(res.city);
+        $("#customer_state").val(res.state);
+        $("#customer_country").val(res.country);
+        $("#customer_zipcode").val(res.zipcode);
     }
 
     /// Clears all form fields
     function clear_form_data() {
-        $("#pet_name").val("");
-        $("#pet_category").val("");
-        $("#pet_available").val("");
-        $("#pet_gender").val("");
-        $("#pet_birthday").val("");
+        $("#customer_id").val("");
+        $("#customer_firstname").val("");
+        $("#customer_lastname").val("");
+        $("#customer_email").val("");
+        $("#customer_phone").val("");
+        $("#customer_street_line1").val("");
+        $("#customer_street_line2").val("");
+        $("#customer_city").val("");
+        $("#customer_state").val("");
+        $("#customer_country").val("");
+        $("#customer_zipcode").val("");        
     }
 
     // Updates the flash message area
@@ -131,6 +138,30 @@ $(function () {
     // Retrieve a Customer
     // ****************************************
 
+    $("#retrieve-btn").click(function () {
+
+        let customer_id = $("#customer_id").val();
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "GET",
+            url: `/customers/${customer_id}`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            clear_form_data()
+            flash_message(res.responseJSON.message)
+        });
+
+    });
     // ****************************************
     // Delete a Customer
     // ****************************************

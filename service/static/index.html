@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="static/css/cerulean_bootstrap.min.css">
+    <link rel="stylesheet" href="static/css/custom.css">
   </head>
   <body>
     <div class="container">
@@ -44,6 +45,7 @@
               <label class="control-label col-sm-2" for="customer_firstname">Firstname:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_firstname" placeholder="Enter First Name for Customer">
+                <span class = "error" id="customer_firstname_err"><p></p></span>
               </div>
             </div>
 
@@ -52,6 +54,7 @@
               <label class="control-label col-sm-2" for="customer_lastname">Lastname:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_lastname" placeholder="Enter Last Name for Customer">
+                <span class = "error" id="customer_lastname_err"><p></p></span>
               </div>
             </div>
 
@@ -60,6 +63,7 @@
               <label class="control-label col-sm-2" for="customer_email">Email :</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_email" placeholder="Enter Email for Customer">
+                <span class = "error" id="customer_email_err"><p></p></span>
               </div>
             </div>
 
@@ -68,22 +72,25 @@
               <label class="control-label col-sm-2" for="customer_phone">Phone:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_phone" placeholder="Enter Phone for Customer">
+                <span class="error" id="customer_phone_err"><p></p></span>
               </div>
             </div>
 
             <!-- STREET LINE1 -->
             <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_street_line1">Street_Line1:</label>
+              <label class="control-label col-sm-2" for="customer_street_line1">Street Line1:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_street_line1" placeholder="Enter Street Line1 for Customer">
+                <span class = "error" id="customer_street_line1_err"><p></p></span>
               </div>
             </div>
 
             <!-- STREET LINE2 -->
             <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_street_line2">Street_Line2:</label>
+              <label class="control-label col-sm-2" for="customer_street_line2">Street Line2:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_street_line2" placeholder="Enter Street Line2 for Customer">
+                <span class = "error" id="customer_street_line2_err"><p></p></span>
               </div>
             </div>
 
@@ -92,6 +99,7 @@
               <label class="control-label col-sm-2" for="customer_city">City:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_city" placeholder="Enter City for Customer">
+                <span class = "error" id="customer_city_err"><p></p></span>
               </div>
             </div>
 
@@ -100,6 +108,7 @@
               <label class="control-label col-sm-2" for="customer_state">State:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_state" placeholder="Enter State for Customer">
+                <span class = "error" id="customer_state_err"><p></p></span>
               </div>
             </div>
 
@@ -108,6 +117,7 @@
               <label class="control-label col-sm-2" for="customer_country">Country:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_country" placeholder="Enter Country for Customer">
+                <span class = "error" id="customer_country_err"><p></p></span>
               </div>
             </div>
 
@@ -116,48 +126,9 @@
               <label class="control-label col-sm-2" for="customer_zipcode">Zipcode:</label>
               <div class="col-sm-10">
                 <input type="text" class="form-control" id="customer_zipcode" placeholder="Enter Zipcode for Customer">
+                <span class = "error" id="customer_zipcode_err"><p></p></span>
               </div>
             </div>
-
-            <!-- CATEGORY -->
-            <!-- <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_category">Category:</label>
-              <div class="col-sm-10">
-                <input type="text" class="form-control" id="customer_category" placeholder="Enter category for Customer">
-              </div>
-            </div> -->
-
-            <!-- AVAILABLE -->
-            <!-- <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_available">Available:</label>
-              <div class="col-sm-10">
-                <select class="form-control" id="customer_available">
-                  <option value="true" selected>True</option>
-                  <option value="false">False</option>
-                </select>
-              </div>
-            </div> -->
-
-            <!-- GENDER -->
-            <!-- <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_gender">Gender:</label>
-              <div class="col-sm-10">
-                <select class="form-control" id="customer_gender">
-                  <option value="UNKNOWN" selected>Unknown</option>
-                  <option value="MALE">Male</option>
-                  <option value="FEMALE">Female</option>
-                </select>
-              </div>
-            </div> -->
-
-            <!-- BIRTHDAY -->
-            <!-- <div class="form-group">
-              <label class="control-label col-sm-2" for="customer_birthday">Birthday:</label>
-              <div class="col-sm-10">
-                <input type="date" class="form-control" id="customer_birthday" placeholder="2020-04-01">
-              </div>
-            </div> -->
-
 
             <!-- SUBMIT BUTTONS -->
             <div class="form-group">

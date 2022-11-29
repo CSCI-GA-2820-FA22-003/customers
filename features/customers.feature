@@ -268,3 +268,12 @@ Scenario: Attempt to create a Customer with missing Zipcode data
     When I set the "Zipcode" to "098765"
     And I press the "Create" button
     Then The "Zipcode" error string should be gone
+
+Scenario: Search Customers by City
+    When I visit the "Home Page"
+    And I set the "City" to "London"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should not see "Nim" in the results
+    And I should not see "Rang" in the results

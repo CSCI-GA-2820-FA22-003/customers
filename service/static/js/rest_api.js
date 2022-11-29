@@ -201,7 +201,7 @@ $(function () {
 
         let ajax = $.ajax({
             type: "GET",
-            url: `/pets?${queryString}`,
+            url: `/customers?${queryString}`,
             contentType: "application/json",
             data: ''
         })
@@ -211,7 +211,7 @@ $(function () {
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'
-            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-1">ID</th>'
             table += '<th class="col-md-2">Firstname</th>'
             table += '<th class="col-md-2">Lastname</th>'
             table += '<th class="col-md-2">Email</th>'
@@ -226,7 +226,18 @@ $(function () {
             let firstCustomer = "";
             for(let i = 0; i < res.length; i++) {
                 let customer = res[i];
-                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.firstname}</td><td>${customer.lastname}</td><td>${customer.email}</td><td>${customer.phone}</td><td>${customer.street_line1}</td>${customer.city}</td>${customer.state}</td>${customer.country}</td>${customer.zipcode}</td></tr>`;
+                table +=  `<tr id="row_${i}">
+                          <td>${customer.id}</td>
+                          <td>${customer.firstname}</td>
+                          <td>${customer.lastname}</td>
+                          <td>${customer.email}</td>
+                          <td>${customer.phone}</td>
+                          <td>${customer.street_line1}</td>
+                          <td>${customer.street_line2}</td>
+                          <td>${customer.city}</td>
+                          <td>${customer.state}</td>
+                          <td>${customer.country}</td>
+                          <td>${customer.zipcode}</td></tr>`;
                 if (i == 0) {
                     firstCustomer = customer;
                 }

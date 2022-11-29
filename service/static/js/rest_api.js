@@ -179,5 +179,73 @@ $(function () {
     // ****************************************
     // Search for a Customer
     // ****************************************
+    $("#search-btn").click(function () {
+
+        let firstname = $("#customer_firstname").val();
+        let city = $("#customer_city").val();
+
+        let queryString = ""
+
+        if (firstname) {
+            queryString += 'firstname=' + firstname
+        }
+        if (city) {
+            if (queryString.length > 0) {
+                queryString += '&city=' + city
+            } else {
+                queryString += 'city=' + city
+            }
+        }
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "GET",
+            url: `/pets?${queryString}`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            $("#search_results").empty();
+            let table = '<table class="table table-striped" cellpadding="10">'
+            table += '<thead><tr>'
+            table += '<th class="col-md-2">ID</th>'
+            table += '<th class="col-md-2">Firstname</th>'
+            table += '<th class="col-md-2">Lastname</th>'
+            table += '<th class="col-md-2">Email</th>'
+            table += '<th class="col-md-2">Phone</th>'
+            table += '<th class="col-md-2">Street_Line1</th>'
+            table += '<th class="col-md-2">Street_Line2</th>'
+            table += '<th class="col-md-2">City</th>'
+            table += '<th class="col-md-2">State</th>'
+            table += '<th class="col-md-2">Country</th>'
+            table += '<th class="col-md-2">Zipcode</th>'
+            table += '</tr></thead><tbody>'
+            let firstCustomer = "";
+            for(let i = 0; i < res.length; i++) {
+                let customer = res[i];
+                table +=  `<tr id="row_${i}"><td>${customer.id}</td><td>${customer.firstname}</td><td>${customer.lastname}</td><td>${customer.email}</td><td>${customer.phone}</td><td>${customer.street_line1}</td>${customer.city}</td>${customer.state}</td>${customer.country}</td>${customer.zipcode}</td></tr>`;
+                if (i == 0) {
+                    firstCustomer = customer;
+                }
+            }
+            table += '</tbody></table>';
+            $("#search_results").append(table);
+
+            // copy the first result to the form
+            if (firstCustomer != "") {
+                update_form_data(firstCustomer)
+            }
+
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
 
 })

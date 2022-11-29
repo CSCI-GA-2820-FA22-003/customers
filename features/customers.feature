@@ -326,4 +326,5 @@ Scenario: List all Customers
     Then I should see the message "Success"
     And I should see "Rary" in the results
     And I should see "Nim" in the results
+    And I should see "Rang" in the results
     And I should not see "Karla" in the results

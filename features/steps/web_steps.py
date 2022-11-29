@@ -33,7 +33,6 @@ from selenium.webdriver.support import expected_conditions
 
 ID_PREFIX = 'customer_'
 
-
 @when('I visit the "Home Page"')
 def step_impl(context):
     """ Make a call to the base URL """
@@ -147,6 +146,7 @@ def step_impl(context, message):
 @then('I should see "{text_string}" in the "{element_name}" field')
 def step_impl(context, text_string, element_name):
     element_id = ID_PREFIX + element_name.lower().replace(' ', '_')
+
     found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
         expected_conditions.text_to_be_present_in_element_value(
             (By.ID, element_id),
@@ -163,3 +163,20 @@ def step_impl(context, element_name, text_string):
     )
     element.clear()
     element.send_keys(text_string)
+
+@then('I should see "{text_string}" in the "{element_name}" error string')
+def step_impl(context, text_string, element_name):
+    element_id = ID_PREFIX + element_name.lower().replace(' ', '_') + '_err'   
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, element_id),
+            text_string
+        )
+    )
+    expect(found).to_be(True)
+
+@then('The "{element_name}" error string should be gone')
+def step_impl(context, element_name):
+    element_id = ID_PREFIX + element_name.lower().replace(' ', '_') + '_err'
+    element = context.driver.find_element_by_id(element_id)
+    expect(element.text).to_be(u'')

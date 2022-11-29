@@ -1,0 +1,7 @@
+.error {
+    font-size: 1em;
+    color: #b94a48;
+}
+.error p {
+    margin: 0.4em 0 0 1em;
+}

@@ -15,4 +15,22 @@ Scenario: The server is running
     Then I should see "Customers RESTful Service" in the title
     And I should not see "404 Not Found"
 
-# Add UI Scenarios here
+# I need create to work for this.
+Scenario: Retrieve a Customer
+    When I visit the "Home Page"
+    # Create the customer here and get its ID copy/paste 
+    # to ID test retrieve...
+    And I set the "ID" to "1"
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    # And I should see "Temp" in the "Firstname" field
+    # And I should see "Rary" in the "Lastname" field
+    # And I should see "tr99@gmail.com" in the "Email" field
+    # And I should see "123456789" in the "Phone" field
+    # And I should see "221B" in the "Street_Line1" field
+    # And I should see "Baker St" in the "Street_Line2" field
+    # And I should see "London" in the "City" field
+    # And I should see "England" in the "State" field
+    # And I should see "UK" in the "Country" field
+    # And I should see "NW1" in the "Zipcode" field
+    

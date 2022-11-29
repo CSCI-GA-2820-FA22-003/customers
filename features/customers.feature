@@ -310,4 +310,11 @@ Scenario: Delete a Customer
     And the "State" field should be empty
     And the "Country" field should be empty
     And the "Zipcode" field should be empty
-    
+
+Scenario: List all Customers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should see "Nim" in the results
+    And I should not see "Karla" in the results

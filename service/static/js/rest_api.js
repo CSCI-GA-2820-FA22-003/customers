@@ -180,15 +180,10 @@ $(function () {
     // Search for a Customer
     // ****************************************
     $("#search-btn").click(function () {
-
-        let firstname = $("#customer_firstname").val();
         let city = $("#customer_city").val();
 
         let queryString = ""
 
-        if (firstname) {
-            queryString += 'firstname=' + firstname
-        }
         if (city) {
             if (queryString.length > 0) {
                 queryString += '&city=' + city
@@ -207,7 +202,6 @@ $(function () {
         })
 
         ajax.done(function(res){
-            //alert(res.toSource())
             $("#search_results").empty();
             let table = '<table class="table table-striped" cellpadding="10">'
             table += '<thead><tr>'

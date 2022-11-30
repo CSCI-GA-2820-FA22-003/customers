@@ -238,7 +238,7 @@ class TestYourResourceServer(TestCase):
         new_customer["phone"] = "+19998887777"
         new_customer["street_line1"] = "World In Catastrophe: KillZone Experiment Department"
         new_customer["street_line2"] = "Nowhere you wanna be"
-        new_customer["city"] = "UNKNOWN"
+        new_customer["city"] = "UNKNOWN".title()
         new_customer["state"] = "Alaska"
         new_customer["country"] = "The United States of America"
         new_customer["zipcode"] = "XXXXX"

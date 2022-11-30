@@ -343,6 +343,15 @@ Scenario: Search Customers by Firstname
     And I should not see "Temp" in the results
     And I should not see "Psudo" in the results
 
+Scenario: Search Customers by City irrespective of case styles
+    When I visit the "Home Page"
+    And I set the "City" to "lOnDoN"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should not see "Nim" in the results
+    And I should not see "Rang" in the results
+    
 Scenario: Search Customers by Lastname
     When I visit the "Home Page"
     And I set the "Lastname" to "Rary"
@@ -360,7 +369,6 @@ Scenario: Search Customers by Email
     And I should see "tr99@gmail.com" in the results
     And I should not see "pn25@gmail.com" in the results
     And I should not see "ar01@gmail.com" in the results
-
 
 Scenario: List all Customers
     When I visit the "Home Page"

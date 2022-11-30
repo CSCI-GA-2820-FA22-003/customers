@@ -86,6 +86,10 @@ def create_customers():
     # Create the account
     customer = Customer()
     customer.deserialize(request.get_json())
+
+    # Setting to title case for optimal possible case insensitive lastname queries later on
+    customer.lastname = customer.lastname.title()
+
     if check_for_dupe_emails(customer.email):
         abort(
             status.HTTP_409_CONFLICT,
@@ -193,6 +197,7 @@ def update_customer(customer_id):
     # Update from the json in the body of the request
     customer_account.deserialize(request.get_json())
     customer_account.id = customer_id
+    customer_account.lastname = customer_account.lastname.title()
     customer_account.update()
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)

@@ -342,7 +342,16 @@ Scenario: Search Customers by Lastname
     And I should see "Rary" in the results
     And I should not see "Nim" in the results
     And I should not see "Rang" in the results
-    
+
+Scenario: Search Customers by Lastname irrespective of case style
+    When I visit the "Home Page"
+    And I set the "Lastname" to "rArY"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should not see "Nim" in the results
+    And I should not see "Rang" in the results
+
 Scenario: Search Customers by Email
     When I visit the "Home Page"
     And I set the "Email" to "tr99@gmail.com"

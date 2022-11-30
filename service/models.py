@@ -3,10 +3,8 @@ Models for YourResourceModel
 
 All of the models are stored in this module
 """
-import logging
 from flask_sqlalchemy import SQLAlchemy
-
-logger = logging.getLogger("flask.app")
+from . import app
 
 # Create the SQLAlchemy object to be initialized later in init_db()
 db = SQLAlchemy()
@@ -52,7 +50,7 @@ class Customer(db.Model):
         """
         Creates a Customer to the database
         """
-        logger.info("Creating %s", self.firstname)
+        app.logger.info("Creating %s", self.firstname)
         self.id = None  # id must be none to generate next primary key
         db.session.add(self)
         db.session.commit()
@@ -61,14 +59,14 @@ class Customer(db.Model):
         """
         Updates a Customer to the database
         """
-        logger.info("Saving %s", self.firstname)
+        app.logger.info("Saving %s", self.firstname)
         if not self.id:
             raise DataValidationError("Update called with empty ID field")
         db.session.commit()
 
     def delete(self):
         """ Removes a Customer from the data store """
-        logger.info("Deleting %s", self.firstname)
+        app.logger.info("Deleting %s", self.firstname)
         db.session.delete(self)
         db.session.commit()
 
@@ -121,7 +119,7 @@ class Customer(db.Model):
     @classmethod
     def init_db(cls, app):
         """ Initializes the database session """
-        logger.info("Initializing database")
+        app.logger.info("Initializing database")
         cls.app = app
         # This is where we initialize SQLAlchemy from the Flask app
         db.init_app(app)
@@ -131,13 +129,13 @@ class Customer(db.Model):
     @classmethod
     def all(cls):
         """ Returns all of the Customers in the database """
-        logger.info("Processing all YourResourceModels")
+        app.logger.info("Processing all YourResourceModels")
         return cls.query.all()
 
     @classmethod
     def find(cls, by_id):
         """ Finds a Customer by it's ID """
-        logger.info("Processing lookup for id %s ...", by_id)
+        app.logger.info("Processing lookup for id %s ...", by_id)
         return cls.query.get(by_id)
 
     @classmethod
@@ -147,7 +145,7 @@ class Customer(db.Model):
         Args:
             firstname (string): the firstname of the Customers you want to match
         """
-        logger.info("Processing firstname query for %s ...", firstname)
+        app.logger.info("Processing firstname query for %s ...", firstname)
         return cls.query.filter(cls.firstname == firstname)
 
     @classmethod
@@ -157,7 +155,7 @@ class Customer(db.Model):
         Args:
             email (string): the email of the Customers you want to match
         """
-        logger.info("Processing email query for %s ...", email)
+        app.logger.info("Processing email query for %s ...", email)
         return cls.query.filter(cls.email == email)
 
     @classmethod
@@ -167,7 +165,7 @@ class Customer(db.Model):
         Args:
             lastname (string): the lastname of the Customers you want to match
         """
-        logger.info("Processing lastname query for %s ...", lastname)
+        app.logger.info("Processing lastname query for %s ...", lastname)
         return cls.query.filter(cls.lastname == lastname)
 
     @classmethod
@@ -176,5 +174,5 @@ class Customer(db.Model):
         Args:
             email (string): the email of the Customers you want to match
         """
-        logger.info("Processing city query for %s ...", city)
-        return cls.query.filter(cls.city == city)
+        app.logger.info("Processing city query for %s ...", city)
+        return cls.query.filter(cls.city == city.title())

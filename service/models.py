@@ -166,7 +166,7 @@ class Customer(db.Model):
             lastname (string): the lastname of the Customers you want to match
         """
         app.logger.info("Processing lastname query for %s ...", lastname)
-        return cls.query.filter(cls.lastname == lastname)
+        return cls.query.filter(cls.lastname == lastname.title())
 
     @classmethod
     def find_by_city(cls, city):

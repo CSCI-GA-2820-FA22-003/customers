@@ -365,8 +365,6 @@ $(function () {
             }
         }
 
-
-
         $("#flash_message").empty();
 
         let ajax = $.ajax({

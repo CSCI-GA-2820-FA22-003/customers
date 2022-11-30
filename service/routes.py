@@ -89,7 +89,8 @@ def create_customers():
 
     # Setting to lower case for optimal possible case insensitive email queries later on
     customer.email = customer.email.lower()
-    # Setting to title case for optimal possible case insensitive city queries later on
+    # Setting to title case for optimal possible case insensitive lastname and city queries later on
+    customer.lastname = customer.lastname.title()
     customer.city = customer.city.title()
 
     if check_for_dupe_emails(customer.email):
@@ -201,6 +202,7 @@ def update_customer(customer_id):
     # Update from the json in the body of the request
     customer_account.deserialize(request.get_json())
     customer_account.id = customer_id
+    customer_account.lastname = customer_account.lastname.title()
     customer_account.email = customer_account.email.lower()
     customer_account.city = customer_account.city.title()
     customer_account.update()

@@ -216,9 +216,7 @@ $(function () {
         for (let i in data) {
             input = "#customer_"+i
             if (!data[i]) {
-                console.log("missing "+ input)
                 displayFieldRequiredNotification(input)
-                console.log("here")
                 dataError++
             } else {
                 removeFieldRequiredNotification(input)
@@ -229,7 +227,6 @@ $(function () {
         if (email)
             if (!validateEmail(email)) {
                 displayEmailFormatErrorNotification();
-                console.log("there")
                 dataError++;
             }
         

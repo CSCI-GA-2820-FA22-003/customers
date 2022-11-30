@@ -334,9 +334,17 @@ $(function () {
     // ****************************************
     $("#search-btn").click(function () {
         let city = $("#customer_city").val();
-
+        let firstname = $("#customer_firstname").val().trim();
         let queryString = ""
 
+        if (firstname){
+            if (queryString.length > 0){
+                queryString += '&firstname=' + firstname
+            } else {
+                queryString += 'firstname=' + firstname
+            }
+        }
+        
         if (city) {
             if (queryString.length > 0) {
                 queryString += '&city=' + city
@@ -344,6 +352,7 @@ $(function () {
                 queryString += 'city=' + city
             }
         }
+
 
         $("#flash_message").empty();
 

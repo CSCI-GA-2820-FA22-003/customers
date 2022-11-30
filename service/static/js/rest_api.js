@@ -333,6 +333,7 @@ $(function () {
     // Search for a Customer
     // ****************************************
     $("#search-btn").click(function () {
+        let email = $("#customer_email").val();
         let city = $("#customer_city").val();
 
         let queryString = ""
@@ -344,6 +345,14 @@ $(function () {
                 queryString += 'city=' + city
             }
         }
+        if (email) {
+            if (queryString.length > 0) {
+                queryString += '&email=' + email
+            } else {
+                queryString += 'email=' + email
+            }
+        }
+
 
         $("#flash_message").empty();
 

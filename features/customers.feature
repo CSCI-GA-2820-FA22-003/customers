@@ -282,6 +282,58 @@ Scenario: Attempt to create a Customer with missing Zipcode data
     And I press the "Create" button
     Then The "Zipcode" error string should be gone
 
+Scenario: Delete a Customer
+    When I visit the "Home Page"
+    And I set the "Firstname" to "Burt"
+    And I set the "Lastname" to "Smith"
+    And I set the "Email" to "burt@smith.com"
+    And I set the "Phone" to "0987654321"
+    And I set the "Street Line1" to "25 Long Drive"
+    And I set the "Street Line2" to "2nd Street"
+    And I set the "City" to "London"
+    And I set the "State" to "London"
+    And I set the "Country" to "UK"
+    And I set the "Zipcode" to "098765"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    And the "Firstname" field should be empty
+    And the "Lastname" field should be empty
+    And the "Email" field should be empty
+    And the "Phone" field should be empty
+    And the "Street Line1" field should be empty
+    And the "Street Line2" field should be empty
+    And the "City" field should be empty
+    And the "State" field should be empty
+    And the "Country" field should be empty
+    And the "Zipcode" field should be empty
+    When I paste the "Id" field
+    And I press the "Delete" button
+    Then I should see the message "Customer has been Deleted!"
+    When I paste the "Id" field
+    And I press the "Retrieve" button    
+    Then the "Firstname" field should be empty
+    And the "Lastname" field should be empty
+    And the "Email" field should be empty
+    And the "Phone" field should be empty
+    And the "Street Line1" field should be empty
+    And the "Street Line2" field should be empty
+    And the "City" field should be empty
+    And the "State" field should be empty
+    And the "Country" field should be empty
+    And the "Zipcode" field should be empty
+
+Scenario: Search Customers by City
+    When I visit the "Home Page"
+    And I set the "City" to "London"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should not see "Nim" in the results
+    And I should not see "Rang" in the results
+    
 Scenario: Update a Customer
     When I visit the "Home Page"
     And I set the "Firstname" to "Burt"

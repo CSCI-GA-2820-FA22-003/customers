@@ -295,6 +295,29 @@ $(function () {
     // Delete a Customer
     // ****************************************
 
+    $("#delete-btn").click(function () {
+
+        let customer_id = $("#customer_id").val();
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "DELETE",
+            url: `/customers/${customer_id}`,
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_form_data()
+            flash_message("Customer has been Deleted!")
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
+    });
+
     // ****************************************
     // Clear the form
     // ****************************************
@@ -309,5 +332,78 @@ $(function () {
     // ****************************************
     // Search for a Customer
     // ****************************************
+    $("#search-btn").click(function () {
+        let city = $("#customer_city").val();
+
+        let queryString = ""
+
+        if (city) {
+            if (queryString.length > 0) {
+                queryString += '&city=' + city
+            } else {
+                queryString += 'city=' + city
+            }
+        }
+
+        $("#flash_message").empty();
+
+        let ajax = $.ajax({
+            type: "GET",
+            url: `/customers?${queryString}`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            $("#search_results").empty();
+            let table = '<table class="table table-striped" cellpadding="10">'
+            table += '<thead><tr>'
+            table += '<th class="col-md-1">ID</th>'
+            table += '<th class="col-md-2">Firstname</th>'
+            table += '<th class="col-md-2">Lastname</th>'
+            table += '<th class="col-md-2">Email</th>'
+            table += '<th class="col-md-2">Phone</th>'
+            table += '<th class="col-md-2">Street_Line1</th>'
+            table += '<th class="col-md-2">Street_Line2</th>'
+            table += '<th class="col-md-2">City</th>'
+            table += '<th class="col-md-2">State</th>'
+            table += '<th class="col-md-2">Country</th>'
+            table += '<th class="col-md-2">Zipcode</th>'
+            table += '</tr></thead><tbody>'
+            let firstCustomer = "";
+            for(let i = 0; i < res.length; i++) {
+                let customer = res[i];
+                table +=  `<tr id="row_${i}">
+                          <td>${customer.id}</td>
+                          <td>${customer.firstname}</td>
+                          <td>${customer.lastname}</td>
+                          <td>${customer.email}</td>
+                          <td>${customer.phone}</td>
+                          <td>${customer.street_line1}</td>
+                          <td>${customer.street_line2}</td>
+                          <td>${customer.city}</td>
+                          <td>${customer.state}</td>
+                          <td>${customer.country}</td>
+                          <td>${customer.zipcode}</td></tr>`;
+                if (i == 0) {
+                    firstCustomer = customer;
+                }
+            }
+            table += '</tbody></table>';
+            $("#search_results").append(table);
+
+            // copy the first result to the form
+            if (firstCustomer != "") {
+                update_form_data(firstCustomer)
+            }
+
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
 
 })

@@ -87,6 +87,8 @@ def create_customers():
     customer = Customer()
     customer.deserialize(request.get_json())
 
+    # Setting to lower case for optimal possible case insensitive email queries later on
+    customer.email = customer.email.lower()
     # Setting to title case for optimal possible case insensitive city queries later on
     customer.city = customer.city.title()
 
@@ -199,6 +201,7 @@ def update_customer(customer_id):
     # Update from the json in the body of the request
     customer_account.deserialize(request.get_json())
     customer_account.id = customer_id
+    customer_account.email = customer_account.email.lower()
     customer_account.city = customer_account.city.title()
     customer_account.update()
 

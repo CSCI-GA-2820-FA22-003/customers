@@ -216,9 +216,7 @@ $(function () {
         for (let i in data) {
             input = "#customer_"+i
             if (!data[i]) {
-                console.log("missing "+ input)
                 displayFieldRequiredNotification(input)
-                console.log("here")
                 dataError++
             } else {
                 removeFieldRequiredNotification(input)
@@ -229,7 +227,6 @@ $(function () {
         if (email)
             if (!validateEmail(email)) {
                 displayEmailFormatErrorNotification();
-                console.log("there")
                 dataError++;
             }
         
@@ -335,7 +332,17 @@ $(function () {
     $("#search-btn").click(function () {
         let city = $("#customer_city").val();
 
+        let lastname = $("#customer_lastname").val();
+
         let queryString = ""
+
+        if (lastname) {
+            if (queryString.length > 0){
+                queryString += '&lastname=' + lastname
+            } else{
+                queryString += 'lastname=' + lastname
+            }
+        }
 
         if (city) {
             if (queryString.length > 0) {

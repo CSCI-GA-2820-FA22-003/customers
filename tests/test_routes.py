@@ -326,7 +326,7 @@ class TestYourResourceServer(TestCase):
         # check the data just to be sure
         for customer in data:
             self.assertEqual(customer["lastname"], lastname_to_use)
-    
+
     def test_get_customers_by_firstname(self):
         """It should return all customers with the same firstname"""
         firstname_to_use = "Mitchell"

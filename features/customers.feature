@@ -334,9 +334,9 @@ Scenario: Search Customers by City
     And I should not see "Nim" in the results
     And I should not see "Rang" in the results
 
-Scenario: Search Customers by First Name
+Scenario: Search Customers by Firstname
     When I visit the "Home Page"
-    And I set the "First Name" to "Adi"
+    And I set the "Firstname" to "Adi"
     And I press the "Search" button
     Then I should see the message "Success"
     And I should see "Rang" in the results

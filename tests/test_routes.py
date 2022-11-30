@@ -327,6 +327,48 @@ class TestYourResourceServer(TestCase):
         for customer in data:
             self.assertEqual(customer["lastname"], lastname_to_use)
 
+    def test_get_customers_by_firstname(self):
+        """It should return all customers with the same firstname"""
+        firstname_to_use = "Mitchell"
+        num_customers = 2
+
+        customer_1 = CustomerFactory()
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.firstname}")
+        customer_1.firstname = firstname_to_use
+        logging.debug(f"ID:{customer_1.id} Cust 1: {customer_1.firstname}")
+        resp = self.app.post(
+            BASE_URL, json=customer_1.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        customer_2 = CustomerFactory()
+        logging.debug(f"ID:{customer_2.id} Cust 2: {customer_2.firstname}")
+        customer_2.firstname = firstname_to_use
+        logging.debug(f"ID:{customer_2.id} Cust 2: {customer_2.firstname}")
+        resp = self.app.post(
+            BASE_URL, json=customer_2.serialize(), content_type="application/json"
+        )
+
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED, "Account not created")
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+
+        response = self.app.get(
+            BASE_URL,
+            query_string=f"firstname={quote_plus(firstname_to_use)}"
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        data = response.get_json()
+        self.assertEqual(len(data), num_customers)
+        # check the data just to be sure
+        for customer in data:
+            self.assertEqual(customer["firstname"], firstname_to_use)
+
     def test_activate_customer_account(self):
         """It should activate a customer's account"""
         customer = CustomerFactory()

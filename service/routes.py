@@ -143,8 +143,11 @@ def list_customers():
     lastname = request.args.get("lastname")
     city = request.args.get("city")
     email = request.args.get("email")
+    firstname = request.args.get("firstname")
     if lastname:
         customers = Customer.find_by_lastname(lastname)
+    elif firstname:
+        customers = Customer.find_by_firstname(firstname)
     elif city:
         customers = Customer.find_by_city(city)
     elif email:

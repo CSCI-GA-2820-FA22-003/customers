@@ -335,7 +335,17 @@ $(function () {
     $("#search-btn").click(function () {
         let city = $("#customer_city").val();
 
+        let lastname = $("#customer_lastname").val();
+
         let queryString = ""
+
+        if (lastname) {
+            if (queryString.length > 0){
+                queryString += '&lastname=' + lastname
+            } else{
+                queryString += 'lastname=' + lastname
+            }
+        }
 
         if (city) {
             if (queryString.length > 0) {

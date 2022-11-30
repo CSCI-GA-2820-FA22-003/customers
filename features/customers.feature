@@ -27,6 +27,7 @@ Scenario: Retrieve a Customer
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "Id" field
@@ -55,6 +56,7 @@ Scenario: Retrieve a Customer
     And I should see "London" in the "State" field
     And I should see "UK" in the "Country" field
     And I should see "098765" in the "Zipcode" field
+    And I should see "True" in the "Active" dropdown
 
     
 Scenario: Create a Customer
@@ -69,6 +71,7 @@ Scenario: Create a Customer
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown
     And I press the "Create" button
     Then I should see the message "Success"
 
@@ -84,6 +87,7 @@ Scenario: Create a Customer with a bad email
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "This doesn't appear to be a valid email address" in the "Email" error string
@@ -99,6 +103,7 @@ Scenario: Attempt to create a Customer with missing Firstname data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Firstname" error string
@@ -117,6 +122,7 @@ Scenario: Attempt to create a Customer with missing Lastname data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Lastname" error string
@@ -135,6 +141,7 @@ Scenario: Attempt to create a Customer with missing Email data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Email" error string
@@ -153,6 +160,7 @@ Scenario: Attempt to create a Customer with missing Phone data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Phone" error string
@@ -171,6 +179,7 @@ Scenario: Attempt to create a Customer with missing Street Line1 data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Street Line1" error string
@@ -189,6 +198,7 @@ Scenario: Attempt to create a Customer with missing Street Line2 data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Street Line2" error string
@@ -207,6 +217,7 @@ Scenario: Attempt to create a Customer with missing City data
     And I set the "State" to "London"
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "City" error string
@@ -225,6 +236,7 @@ Scenario: Attempt to create a Customer with missing State data
     And I set the "City" to "London"    
     And I set the "Country" to "UK"
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "State" error string
@@ -243,6 +255,7 @@ Scenario: Attempt to create a Customer with missing Country data
     And I set the "City" to "London"    
     And I set the "State" to "London"    
     And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Country" error string
@@ -261,6 +274,7 @@ Scenario: Attempt to create a Customer with missing Zipcode data
     And I set the "City" to "London"    
     And I set the "State" to "London"  
     And I set the "Country" to "UK"
+    And I select "True" in the "Active" dropdown    
     And I press the "Create" button
     Then I should see the message "Form Error(s)"
     And I should see "Required field" in the "Zipcode" error string
@@ -320,3 +334,51 @@ Scenario: Search Customers by City
     And I should not see "Nim" in the results
     And I should not see "Rang" in the results
     
+Scenario: Update a Customer
+    When I visit the "Home Page"
+    And I set the "Firstname" to "Burt"
+    And I set the "Lastname" to "Smith"
+    And I set the "Email" to "burt@smith.com"
+    And I set the "Phone" to "0987654321"
+    And I set the "Street Line1" to "25 Long Drive"
+    And I set the "Street Line2" to "2nd Street"
+    And I set the "City" to "London"
+    And I set the "State" to "London"
+    And I set the "Country" to "UK"
+    And I set the "Zipcode" to "098765"
+    And I select "True" in the "Active" dropdown
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    Then the "Id" field should be empty
+    When I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see the message "Success"
+    And I should see "Burt" in the "Firstname" field
+    And I should see "Smith" in the "Lastname" field
+    And I should see "burt@smith.com" in the "Email" field
+    And I should see "0987654321" in the "Phone" field
+    And I should see "25 Long Drive" in the "Street Line1" field
+    And I should see "2nd Street" in the "Street Line2" field
+    And I should see "London" in the "City" field
+    And I should see "London" in the "State" field
+    And I should see "UK" in the "Country" field
+    And I should see "098765" in the "Zipcode" field
+    And I should see "True" in the "Active" dropdown
+    When I set the "Firstname" to "STEVEN"
+    And I set the "Email" to "MY_NEW_EMAIL@NEWEN.COM"
+    And I select "False" in the "Active" dropdown
+    And I press the "Update" button
+    Then I should see the message "Success"
+    And I should see "STEVEN" in the "Firstname" field
+    And I should see "Smith" in the "Lastname" field
+    And I should see "MY_NEW_EMAIL@NEWEN.COM" in the "Email" field
+    And I should see "0987654321" in the "Phone" field
+    And I should see "25 Long Drive" in the "Street Line1" field
+    And I should see "2nd Street" in the "Street Line2" field
+    And I should see "London" in the "City" field
+    And I should see "London" in the "State" field
+    And I should see "UK" in the "Country" field
+    And I should see "098765" in the "Zipcode" field
+    And I should see "False" in the "Active" dropdown

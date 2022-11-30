@@ -17,7 +17,13 @@ $(function () {
         $("#customer_state").val(res.state);
         $("#customer_country").val(res.country);
         $("#customer_zipcode").val(res.zipcode);
+        if (res.acc_active == true) {
+            $("#customer_active").val("true");
+        } else {
+            $("#customer_active").val("false");
+        }
     }
+
 
     /// Clears all form fields
     function clear_form_data() {
@@ -31,8 +37,29 @@ $(function () {
         $("#customer_city").val("");
         $("#customer_state").val("");
         $("#customer_country").val("");
-        $("#customer_zipcode").val("");        
+        $("#customer_zipcode").val("");
+        $("#customer_active").val("true");
     }
+
+    function removeAllNotifications() {
+        const fields = [
+            "firstname",
+            "lastname",
+            "email",
+            "phone",
+            "street_line1",
+            "street_line2",
+            "city",
+            "state",
+            "country",
+            "zipcode",
+        ];
+
+        fields.forEach(function(field) {
+            input = "#customer_"+field  
+            removeFieldRequiredNotification(input)
+        });
+    }    
 
     // Updates the flash message area
     function flash_message(message) {
@@ -44,6 +71,32 @@ $(function () {
     function validateEmail($email) {
         let emailReg = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         return emailReg.test($email);
+    }
+
+    function displayEmailFormatErrorNotification(){
+        input = "#customer_email"
+        $(input).closest(".form-group").addClass("has-error");
+        $(input+"_err p").html("");
+        $(input+"_err p").append("This doesn't appear to be a valid email address").show();
+    }
+
+    function displayFieldRequiredNotification(input){
+        $(input).closest(".form-group").addClass("has-error");
+        $(input+"_err p").html("");
+        $(input+"_err p").text("Required field").show();
+    }
+
+    function removeFieldRequiredNotification(input){
+        $(input).closest(".form-group").removeClass("has-error");
+        $(input+"_err p").html("");
+        $(input+"_err p").hide();
+    }   
+    
+    function convertActiveDropdownToInt(active){
+        if (active == "true")
+            return 1
+        else
+            return 0
     }
 
     // ****************************************
@@ -62,7 +115,8 @@ $(function () {
         let state = $("#customer_state").val().trim();
         let country = $("#customer_country").val().trim();
         let zipcode = $("#customer_zipcode").val().trim();
-      
+        let active = $("#customer_active").val();
+
         let data = {
             "firstname": firstname,
             "lastname": lastname,
@@ -73,7 +127,7 @@ $(function () {
             "city": city,
             "state": state,
             "country": country,
-            "zipcode": zipcode,  
+            "zipcode": zipcode,
         };
 
         // Check for missing required data in form
@@ -81,33 +135,28 @@ $(function () {
         for (let i in data) {
             input = "#customer_"+i
             if (!data[i]) {
-                $(input).closest(".form-group").addClass("has-error");
-                $(input+"_err p").html("");
-                $(input+"_err p").text("Required field").show();
+                displayFieldRequiredNotification(input)
                 dataError++
             } else {
-                $(input).closest(".form-group").removeClass("has-error");
-                $(input+"_err p").html("");
-                $(input+"_err p").hide();
+                removeFieldRequiredNotification(input)
             }
         }
 
-        // Validate the email address
-        if (email) {
+        // Check the email is in the correct format
+        if (email)
             if (!validateEmail(email)) {
-                input = "#customer_email"
-                $(input).closest(".form-group").addClass("has-error");
-                $(input+"_err p").html("");
-                $(input+"_err p").append("This doesn't appear to be a valid email address").show();        
-                dataError++
+                displayEmailFormatErrorNotification();
+                dataError++;
             }
-        }
 
         // Stop the execution of the script if there are data errors
         if (dataError > 0) {
             $("#flash_message").html("Form Error(s)")
             return false
         }
+
+        // Add active status to payload after user input validation
+        data.acc_active = convertActiveDropdownToInt(active);
         
         $("#flash_message").empty();
         
@@ -133,6 +182,85 @@ $(function () {
     // ****************************************
     // Update a Customer
     // ****************************************
+
+    $("#update-btn").click(function () {
+
+        let customer_id = $("#customer_id").val();
+        let firstname = $("#customer_firstname").val().trim();
+        let lastname = $("#customer_lastname").val().trim();
+        let email = $("#customer_email").val().trim();
+        let phone = $("#customer_phone").val().trim();
+        let street_line1 = $("#customer_street_line1").val().trim();
+        let street_line2 = $("#customer_street_line2").val().trim();
+        let city = $("#customer_city").val().trim();
+        let state = $("#customer_state").val().trim();
+        let country = $("#customer_country").val().trim();
+        let zipcode = $("#customer_zipcode").val().trim();
+        let active = $("#customer_active").val();
+        
+        let data = {
+            "firstname": firstname,
+            "lastname": lastname,
+            "email": email,
+            "phone": phone,
+            "street_line1": street_line1,
+            "street_line2": street_line2,
+            "city": city,
+            "state": state,
+            "country": country,
+            "zipcode": zipcode,
+        };
+
+        // Check for missing required data in form
+        dataError = 0
+        for (let i in data) {
+            input = "#customer_"+i
+            if (!data[i]) {
+                console.log("missing "+ input)
+                displayFieldRequiredNotification(input)
+                console.log("here")
+                dataError++
+            } else {
+                removeFieldRequiredNotification(input)
+            }
+        }
+
+        // Check the email is in the correct format
+        if (email)
+            if (!validateEmail(email)) {
+                displayEmailFormatErrorNotification();
+                console.log("there")
+                dataError++;
+            }
+        
+        // Stop the execution of the script if there are data errors
+        if (dataError > 0) {
+            $("#flash_message").html("Form Error(s)")
+            return false
+        }
+        
+        $("#flash_message").empty();
+        
+        // Add active status to payload after user input validation
+        data.acc_active = convertActiveDropdownToInt(active);
+
+        let ajax = $.ajax({
+                type: "PUT",
+                url: `/customers/${customer_id}`,
+                contentType: "application/json",
+                data: JSON.stringify(data)
+            })
+
+        ajax.done(function(res){
+            update_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            flash_message(res.responseJSON.message)
+        });
+
+    });
 
     // ****************************************
     // Retrieve a Customer
@@ -198,6 +326,7 @@ $(function () {
         $("#customer_id").val("");
         $("#flash_message").empty();
         clear_form_data()
+        removeAllNotifications()
     });
 
     // ****************************************

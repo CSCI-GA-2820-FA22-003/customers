@@ -216,9 +216,7 @@ $(function () {
         for (let i in data) {
             input = "#customer_"+i
             if (!data[i]) {
-                console.log("missing "+ input)
                 displayFieldRequiredNotification(input)
-                console.log("here")
                 dataError++
             } else {
                 removeFieldRequiredNotification(input)
@@ -229,7 +227,6 @@ $(function () {
         if (email)
             if (!validateEmail(email)) {
                 displayEmailFormatErrorNotification();
-                console.log("there")
                 dataError++;
             }
         
@@ -333,8 +330,10 @@ $(function () {
     // Search for a Customer
     // ****************************************
     $("#search-btn").click(function () {
+        let email = $("#customer_email").val();
         let city = $("#customer_city").val();
         let firstname = $("#customer_firstname").val().trim();
+        let lastname = $("#customer_lastname").val();
         let queryString = ""
 
         if (firstname){
@@ -344,7 +343,13 @@ $(function () {
                 queryString += 'firstname=' + firstname
             }
         }
-        
+        if (lastname) {
+            if (queryString.length > 0){
+                queryString += '&lastname=' + lastname
+            } else{
+                queryString += 'lastname=' + lastname
+            }
+        }
         if (city) {
             if (queryString.length > 0) {
                 queryString += '&city=' + city
@@ -352,6 +357,14 @@ $(function () {
                 queryString += 'city=' + city
             }
         }
+        if (email) {
+            if (queryString.length > 0) {
+                queryString += '&email=' + email
+            } else {
+                queryString += 'email=' + email
+            }
+        }
+
 
 
         $("#flash_message").empty();

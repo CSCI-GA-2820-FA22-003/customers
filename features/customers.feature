@@ -334,6 +334,15 @@ Scenario: Search Customers by City
     And I should not see "Nim" in the results
     And I should not see "Rang" in the results
     
+Scenario: List all Customers
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should see "Nim" in the results
+    And I should see "Rang" in the results
+    And I should not see "Karla" in the results
+
 Scenario: Update a Customer
     When I visit the "Home Page"
     And I set the "Firstname" to "Burt"
@@ -382,3 +391,4 @@ Scenario: Update a Customer
     And I should see "UK" in the "Country" field
     And I should see "098765" in the "Zipcode" field
     And I should see "False" in the "Active" dropdown
+

@@ -89,13 +89,14 @@ def create_customers():
 
     # Setting to lower case for optimal possible case insensitive email queries later on
     customer.email = customer.email.lower()
+    # Setting to title case for optimal possible case insensitive city queries later on
+    customer.city = customer.city.title()
 
     if check_for_dupe_emails(customer.email):
         abort(
             status.HTTP_409_CONFLICT,
             f"Another Customer with email '{customer.email}' found.",
         )
-
     customer.create()
 
     # Create a message to return
@@ -144,8 +145,11 @@ def list_customers():
     lastname = request.args.get("lastname")
     city = request.args.get("city")
     email = request.args.get("email")
+    firstname = request.args.get("firstname")
     if lastname:
         customers = Customer.find_by_lastname(lastname)
+    elif firstname:
+        customers = Customer.find_by_firstname(firstname)
     elif city:
         customers = Customer.find_by_city(city)
     elif email:
@@ -198,6 +202,7 @@ def update_customer(customer_id):
     customer_account.deserialize(request.get_json())
     customer_account.id = customer_id
     customer_account.email = customer_account.email.lower()
+    customer_account.city = customer_account.city.title()
     customer_account.update()
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)

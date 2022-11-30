@@ -334,6 +334,24 @@ Scenario: Search Customers by City
     And I should not see "Nim" in the results
     And I should not see "Rang" in the results
 
+Scenario: Search Customers by Firstname
+    When I visit the "Home Page"
+    And I set the "Firstname" to "Adi"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Adi" in the results
+    And I should not see "Temp" in the results
+    And I should not see "Psudo" in the results
+
+Scenario: Search Customers by City irrespective of case styles
+    When I visit the "Home Page"
+    And I set the "City" to "lOnDoN"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "Rary" in the results
+    And I should not see "Nim" in the results
+    And I should not see "Rang" in the results
+    
 Scenario: Search Customers by Lastname
     When I visit the "Home Page"
     And I set the "Lastname" to "Rary"
@@ -361,6 +379,14 @@ Scenario: Search Customers by Email
     And I should not see "pn25@gmail.com" in the results
     And I should not see "ar01@gmail.com" in the results
 
+Scenario: Search Customers by Email
+    When I visit the "Home Page"
+    And I set the "Email" to "TR99@gmAIl.COM"
+    And I press the "Search" button
+    Then I should see the message "Success"
+    And I should see "tr99@gmail.com" in the results
+    And I should not see "pn25@gmail.com" in the results
+    And I should not see "ar01@gmail.com" in the results
 
 Scenario: List all Customers
     When I visit the "Home Page"
@@ -404,13 +430,13 @@ Scenario: Update a Customer
     And I should see "098765" in the "Zipcode" field
     And I should see "True" in the "Active" dropdown
     When I set the "Firstname" to "STEVEN"
-    And I set the "Email" to "MY_NEW_EMAIL@NEWEN.COM"
+    And I set the "Email" to "my_new_email@newen.com"
     And I select "False" in the "Active" dropdown
     And I press the "Update" button
     Then I should see the message "Success"
     And I should see "STEVEN" in the "Firstname" field
     And I should see "Smith" in the "Lastname" field
-    And I should see "MY_NEW_EMAIL@NEWEN.COM" in the "Email" field
+    And I should see "my_new_email@newen.com" in the "Email" field
     And I should see "0987654321" in the "Phone" field
     And I should see "25 Long Drive" in the "Street Line1" field
     And I should see "2nd Street" in the "Street Line2" field

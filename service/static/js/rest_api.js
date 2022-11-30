@@ -332,11 +332,17 @@ $(function () {
     $("#search-btn").click(function () {
         let email = $("#customer_email").val();
         let city = $("#customer_city").val();
-
+        let firstname = $("#customer_firstname").val().trim();
         let lastname = $("#customer_lastname").val();
-
         let queryString = ""
 
+        if (firstname){
+            if (queryString.length > 0){
+                queryString += '&firstname=' + firstname
+            } else {
+                queryString += 'firstname=' + firstname
+            }
+        }
         if (lastname) {
             if (queryString.length > 0){
                 queryString += '&lastname=' + lastname
@@ -344,7 +350,6 @@ $(function () {
                 queryString += 'lastname=' + lastname
             }
         }
-
         if (city) {
             if (queryString.length > 0) {
                 queryString += '&city=' + city
@@ -359,7 +364,6 @@ $(function () {
                 queryString += 'email=' + email
             }
         }
-
 
         $("#flash_message").empty();
 

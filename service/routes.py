@@ -118,7 +118,7 @@ def init_db():
 ######################################################################
 
 
-@app.route("/customers", methods=["POST"])
+@app.route("/api/customers", methods=["POST"])
 def create_customers():
     """
     Creates a Customer
@@ -159,7 +159,7 @@ def create_customers():
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["GET"])
+@app.route("/api/customers/<int:customer_id>", methods=["GET"])
 def get_customer(customer_id):
     """
     Retrieve a single Customer
@@ -182,7 +182,7 @@ def get_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers", methods=["GET"])
+@app.route("/api/customers", methods=["GET"])
 def list_customers():
     """Returns all of the Customers"""
     app.logger.info("Request for all Customers")
@@ -212,7 +212,7 @@ def list_customers():
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+@app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
 def delete_customer(customer_id):
     """ Delete a Customer """
     app.logger.info("Request to delete customer with id: %s", customer_id)
@@ -227,7 +227,7 @@ def delete_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["PUT"])
+@app.route("/api/customers/<int:customer_id>", methods=["PUT"])
 def update_customer(customer_id):
     """
     Update a customer's personal data.
@@ -258,7 +258,7 @@ def update_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>/active", methods=["PUT"])
+@app.route("/api/customers/<int:customer_id>/active", methods=["PUT"])
 def activate_customer_account(customer_id):
     """
     Activate a customer's account
@@ -283,7 +283,7 @@ def activate_customer_account(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>/active", methods=["DELETE"])
+@app.route("/api/customers/<int:customer_id>/active", methods=["DELETE"])
 def deactivate_customer_account(customer_id):
     """
     Deactivate a customer's account

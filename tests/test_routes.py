@@ -17,7 +17,7 @@ from service.common import status
 from tests.factories import CustomerFactory  # HTTP Status Codes
 from urllib.parse import quote_plus
 
-BASE_URL = "/customers"
+BASE_URL = "/api/customers"
 
 ######################################################################
 #  T E S T   C A S E S

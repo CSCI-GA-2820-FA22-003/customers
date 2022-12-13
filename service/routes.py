@@ -5,12 +5,61 @@ Describe what your service does here
 """
 
 # from tkinter import E
-from flask import jsonify, request, url_for, make_response, abort
+from flask import jsonify, request, url_for, make_response
+from flask_restx import fields, reqparse, inputs  # Api, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
 
 # Import Flask application
-from . import app
+from . import app, api
+
+######################################################################
+# GET INDEX
+######################################################################
+
+
+@app.route("/")
+def index():
+    """Base URL for our service"""
+    app.logger.info("Base URL")
+    return app.send_static_file("index.html")
+
+######################################################################
+# Configure the Root route before OpenAPI
+######################################################################
+
+
+# Define the model so that the docs reflect what can be sent
+create_model = api.model('Customer', {
+    'firstname': fields.String(required=True, description='The first name of the Customer'),
+    'lastname': fields.String(required=True, description='The last name of the Customer'),
+    'email': fields.String(required=True, description='The email of the Customer'),
+    'phone': fields.String(required=True, description='The phone of the Customer'),
+    'street_line1': fields.String(required=True, description='The street_line1 of the Customer'),
+    'street_line2': fields.String(required=True, description='The street_line2 of the Customer'),
+    'city': fields.String(required=True, description='The city of the Customer'),
+    'state': fields.String(required=True, description='The state of the Customer'),
+    'country': fields.String(required=True, description='The country of the Customer'),
+    'zipcode': fields.String(required=True, description='The zipcode of the Customer'),
+    'created_at': fields.Date(required=True, description='The time when Customer was created'),
+    'updated_at': fields.Date(required=True, description='The time when Customer was deleted'),
+    'acc_active': fields.Boolean(required=True, description='Is the Customer account active'),
+})
+
+customer_model = api.inherit(
+    'CustomerModel',
+    create_model,
+    {
+        '_id': fields.String(readOnly=True,
+                             description='The unique id assigned internally by service'),
+    }
+)
+
+# query string arguments
+customer_args = reqparse.RequestParser()
+customer_args.add_argument('name', type=str, location='args', required=False, help='List Customers by name')
+customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
+                           required=False, help='List Customers by their active status')
 
 ############################################################
 # H E A L T H   E N D P O I N TS
@@ -26,6 +75,12 @@ def health():
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################
+
+
+def abort(error_code: int, message: str):
+    """Logs errors before aborting"""
+    app.logger.error(message)
+    api.abort(error_code, message)
 
 
 def check_for_dupe_emails(customer_email):
@@ -59,22 +114,11 @@ def init_db():
     Customer.init_db(app)
 
 ######################################################################
-# GET INDEX
-######################################################################
-
-
-@app.route("/")
-def index():
-    """Base URL for our service"""
-    app.logger.info("Base URL")
-    return app.send_static_file("index.html")
-
-######################################################################
 # CREATE A NEW CUSTOMER
 ######################################################################
 
 
-@app.route("/customers", methods=["POST"])
+@app.route("/api/customers", methods=["POST"])
 def create_customers():
     """
     Creates a Customer
@@ -115,7 +159,7 @@ def create_customers():
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["GET"])
+@app.route("/api/customers/<int:customer_id>", methods=["GET"])
 def get_customer(customer_id):
     """
     Retrieve a single Customer
@@ -138,7 +182,7 @@ def get_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers", methods=["GET"])
+@app.route("/api/customers", methods=["GET"])
 def list_customers():
     """Returns all of the Customers"""
     app.logger.info("Request for all Customers")
@@ -168,7 +212,7 @@ def list_customers():
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["DELETE"])
+@app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
 def delete_customer(customer_id):
     """ Delete a Customer """
     app.logger.info("Request to delete customer with id: %s", customer_id)
@@ -183,7 +227,7 @@ def delete_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>", methods=["PUT"])
+@app.route("/api/customers/<int:customer_id>", methods=["PUT"])
 def update_customer(customer_id):
     """
     Update a customer's personal data.
@@ -214,7 +258,7 @@ def update_customer(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>/active", methods=["PUT"])
+@app.route("/api/customers/<int:customer_id>/active", methods=["PUT"])
 def activate_customer_account(customer_id):
     """
     Activate a customer's account
@@ -239,7 +283,7 @@ def activate_customer_account(customer_id):
 ######################################################################
 
 
-@app.route("/customers/<int:customer_id>/active", methods=["DELETE"])
+@app.route("/api/customers/<int:customer_id>/active", methods=["DELETE"])
 def deactivate_customer_account(customer_id):
     """
     Deactivate a customer's account

@@ -168,6 +168,10 @@ class CustomerResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A CUSTOMER
     # ------------------------------------------------------------------
+    @api.doc('delete_customers', security='apikey')
+    @api.response(204, 'Customer deleted')
+    @api.expect(create_model)
+    @api.marshal_with(customer_model)
     def delete_customer(self, customer_id):
         """ Delete a Customer """
         app.logger.info("Request to delete customer with id: %s", customer_id)

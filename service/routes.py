@@ -6,7 +6,7 @@ Describe what your service does here
 
 # from tkinter import E
 from flask import jsonify, request, make_response
-from flask_restx import fields, reqparse, inputs, Resource
+from flask_restx import fields, reqparse, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
 
@@ -56,9 +56,14 @@ customer_model = api.inherit(
 
 # query string arguments
 customer_args = reqparse.RequestParser()
-customer_args.add_argument('name', type=str, location='args', required=False, help='List Customers by name')
-customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
-                           required=False, help='List Customers by their active status')
+customer_args.add_argument('firstname', type=str, location='args', required=False,
+                           help='List Customers by first name')
+customer_args.add_argument('lastname', type=str, location='args', required=False,
+                           help='List Customers by last name')
+customer_args.add_argument('city', type=str, location='args', required=False,
+                           help='List Customers by city')
+customer_args.add_argument('email', type=str, location='args', required=False,
+                           help='List Customers by email')
 
 ############################################################
 # H E A L T H   E N D P O I N TS
@@ -189,19 +194,21 @@ class CustomerCollection(Resource):
         """Returns all of the Customers"""
         app.logger.info("Request for all Customers")
         customers = []
-        lastname = request.args.get("lastname")
-        city = request.args.get("city")
-        email = request.args.get("email")
-        firstname = request.args.get("firstname")
-        if lastname:
-            customers = Customer.find_by_lastname(lastname)
-        elif firstname:
-            customers = Customer.find_by_firstname(firstname)
-        elif city:
-            customers = Customer.find_by_city(city)
-        elif email:
-            customers = Customer.find_by_email(email)
+        args = customer_args.parse_args()
+        if args['lastname']:
+            app.logger.info(f'Filtering by lastname: {args["lastname"]}')
+            customers = Customer.find_by_lastname(args['lastname'])
+        elif args['firstname']:
+            app.logger.info(f'Filtering by firstname: {args["firstname"]}')
+            customers = Customer.find_by_firstname(args['firstname'])
+        elif args['city']:
+            app.logger.info(f'Filtering by city: {args["city"]}')
+            customers = Customer.find_by_city(args['city'])
+        elif args['email']:
+            app.logger.info(f'Filtering by email: {args["email"]}')
+            customers = Customer.find_by_email(args["email"])
         else:
+            app.logger.info('Returning unfiltered list.')
             customers = Customer.all()
 
         results = [customer.serialize() for customer in customers]
@@ -231,6 +238,7 @@ class CustomerCollection(Resource):
         # Setting to title case for optimal possible case insensitive
         # lastname and city queries later on
         customer.lastname = customer.lastname.title()
+        customer.firstname = customer.firstname.title()
         customer.city = customer.city.title()
 
         if check_for_dupe_emails(customer.email):

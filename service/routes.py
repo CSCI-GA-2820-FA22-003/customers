@@ -323,27 +323,3 @@ class ActivateResource(Resource):
         customer.update()
         app.logger.info("Customer with ID [%s] deactivate complete.", customer_id)
         return customer.serialize(), status.HTTP_200_OK
-
-
-######################################################################
-# READ A CUSTOMER
-######################################################################
-
-
-@app.route("/api/customers/<int:customer_id>", methods=["GET"])
-def get_customer(customer_id):
-    """
-    Retrieve a single Customer
-    This endpoint will return a Customer based on it's id
-    """
-    app.logger.info("Request for Customer with id: %s", customer_id)
-
-    # See if the Customer exists and abort if it doesn't
-    customer = Customer.find(customer_id)
-    if not customer:
-        abort(
-            status.HTTP_404_NOT_FOUND,
-            f"Customer with id '{customer_id}' could not be found.",
-        )
-
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)

@@ -95,18 +95,6 @@ def check_for_dupe_emails(customer_email):
     return False
 
 
-def check_content_type(media_type):
-    """Checks that the media type is correct"""
-    content_type = request.headers.get("Content-Type")
-    if content_type and content_type == media_type:
-        return
-    app.logger.error("Invalid Content-Type: %s", content_type)
-    abort(
-        status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
-        "Content-Type must be {}".format(media_type),
-    )
-
-
 def init_db():
     """ Initializes the SQLAlchemy app """
     global app
@@ -147,7 +135,6 @@ class CustomerResource(Resource):
         This endpoint will update a customer's data based on the body that is posted
         """
         app.logger.info("Request to update the customer with id: %s", customer_id)
-        check_content_type("application/json")
 
         # See if the account exists and abort if it doesn't
         customer_account = Customer.find(customer_id)
@@ -168,11 +155,25 @@ class CustomerResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A CUSTOMER
     # ------------------------------------------------------------------
-
+    @api.doc('delete_customers')
+    @api.response(204, 'Customer deleted')
+    def delete(self, customer_id):
+        """
+        Delete a Customer
+        """
+        app.logger.info("Request to delete customer with id: %s", customer_id)
+        customer = Customer.find(customer_id)
+        if customer:
+            customer.delete()
+            app.logger.info("Customer with ID [%s] delete complete.",
+                            customer_id)
+        return "", status.HTTP_204_NO_CONTENT
 
 ######################################################################
 #  PATH: /customers
 ######################################################################
+
+
 @api.route('/customers', strict_slashes=False)
 class CustomerCollection(Resource):
     """ Handles all interactions with collections of Customers """
@@ -221,7 +222,6 @@ class CustomerCollection(Resource):
         in the body that is posted
         """
         app.logger.info("Request to create a Customer")
-        check_content_type("application/json")
         customer = Customer()
         app.logger.debug('Payload = %s', api.payload)
         customer.deserialize(api.payload)
@@ -268,7 +268,6 @@ class ActivateResource(Resource):
         This endpoint will Activate a Customer based on the id specified in the path
         """
         app.logger.info("Request to Activate a customer with id: %s", customer_id)
-        check_content_type("application/json")
         customer = Customer.find(customer_id)
         if not customer:
             abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.")
@@ -290,7 +289,6 @@ class ActivateResource(Resource):
         This endpoint will Deactivate a Customer based on the id specified in the path
         """
         app.logger.info("Request to Deactivate a customer with id: %s", customer_id)
-        check_content_type("application/json")
         customer = Customer.find(customer_id)
         if not customer:
             abort(
@@ -325,19 +323,3 @@ def get_customer(customer_id):
         )
 
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-
-
-######################################################################
-# DELETE A CUSTOMER
-######################################################################
-
-
-@app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
-def delete_customer(customer_id):
-    """ Delete a Customer """
-    app.logger.info("Request to delete customer with id: %s", customer_id)
-    customer = Customer.find(customer_id)
-    if customer:
-        customer.delete()
-        app.logger.info("Customer with ID [%s] delete complete.", customer_id)
-    return "", status.HTTP_204_NO_CONTENT

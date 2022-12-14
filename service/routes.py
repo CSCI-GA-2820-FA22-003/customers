@@ -6,7 +6,7 @@ Describe what your service does here
 
 # from tkinter import E
 from flask import jsonify, request, url_for, make_response
-from flask_restx import fields, reqparse, inputs , Resource
+from flask_restx import fields, reqparse, inputs, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
 
@@ -117,6 +117,7 @@ def init_db():
 ######################################################################
 # READ A CUSTOMER
 ######################################################################
+
 
 @api.route('/customers/<customer_id>')
 @api.param('customer_id', 'The customer identifier')

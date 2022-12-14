@@ -190,7 +190,7 @@ class TestYourResourceServer(TestCase):
 
         customer = self._create_customers(1)[0]
         resp = self.app.get(
-            f"{BASE_URL}/{customer.id}", content_type = "application/json"
+            f"{BASE_URL}/{customer.id}", content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()

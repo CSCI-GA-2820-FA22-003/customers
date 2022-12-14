@@ -19,6 +19,7 @@ from urllib.parse import quote_plus
 
 BASE_URL = "/api/customers"
 
+
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
@@ -189,7 +190,7 @@ class TestYourResourceServer(TestCase):
 
         customer = self._create_customers(1)[0]
         resp = self.app.get(
-            f"{BASE_URL}/{customer.id}", content_type="application/json"
+            f"{BASE_URL}/{customer.id}", content_type = "application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         data = resp.get_json()
@@ -215,8 +216,11 @@ class TestYourResourceServer(TestCase):
 
     def test_get_customer_not_found(self):
         """It should not Read a Customer that is not found"""
-        resp = self.app.get(f"{BASE_URL}/0")
+        resp = self.app.get(f"{BASE_URL}/100")
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        data = resp.get_json()
+        logging.debug("Response data = %s", data)
+        self.assertIn("was not found", data["message"])
 
     def test_method_not_supported(self):
         """It should not allow an illegal method call"""

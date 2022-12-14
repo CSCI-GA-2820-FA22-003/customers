@@ -6,9 +6,10 @@ Describe what your service does here
 
 # from tkinter import E
 from flask import jsonify, request, url_for, make_response
-from flask_restx import fields, reqparse, inputs  # Api, Resource
+from flask_restx import fields, reqparse, inputs , Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
+
 
 # Import Flask application
 from . import app, api
@@ -114,6 +115,38 @@ def init_db():
     Customer.init_db(app)
 
 ######################################################################
+# READ A CUSTOMER
+######################################################################
+
+@api.route('/customers/<customer_id>')
+@api.param('customer_id', 'The customer identifier')
+class CustomerResource(Resource):
+    """
+    CustomerResource class
+
+    Allows the manipulation of a single Pet
+    GET /customer{id} - Returns a Customer with the id
+    PUT /customer{id} - Update a Customer with the id
+    DELETE /customer{id} -  Deletes a Customer with the id
+    """
+    @api.doc('get_customers')
+    @api.response(404, 'Customer not found')
+    @api.marshal_with(customer_model)
+    def get(self, customer_id):
+        """
+        Retrieve a single Customer
+        This endpoint will return a Customer based on it's id
+        """
+        app.logger.info("Request for Customer with id: %s", customer_id)
+
+        # See if the Customer exists and abort if it doesn't
+        customer = Customer.find(customer_id)
+        if not customer:
+            abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.",)
+        return customer.serialize(), status.HTTP_200_OK
+
+
+######################################################################
 # CREATE A NEW CUSTOMER
 ######################################################################
 
@@ -147,39 +180,17 @@ def create_customers():
     # Create a message to return
     message = customer.serialize()
     # Change to "get customer" when it is made
-    location_url = url_for("get_customer", customer_id=customer.id, _external=True)
+    location_url = url_for("customer_resource", customer_id=customer.id, _external=True)
 
     app.logger.info("Customer with ID [%s] created.", customer.id)
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
 
-######################################################################
-# READ A CUSTOMER
-######################################################################
 
-
-@app.route("/api/customers/<int:customer_id>", methods=["GET"])
-def get_customer(customer_id):
-    """
-    Retrieve a single Customer
-    This endpoint will return a Customer based on it's id
-    """
-    app.logger.info("Request for Customer with id: %s", customer_id)
-
-    # See if the Customer exists and abort if it doesn't
-    customer = Customer.find(customer_id)
-    if not customer:
-        abort(
-            status.HTTP_404_NOT_FOUND,
-            f"Customer with id '{customer_id}' could not be found.",
-        )
-
-    return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-
-######################################################################
-# LIST ALL CUSTOMERS
-######################################################################
+# ######################################################################
+# # LIST ALL CUSTOMERS
+# ######################################################################
 
 
 @app.route("/api/customers", methods=["GET"])
@@ -207,9 +218,9 @@ def list_customers():
     return jsonify(results), status.HTTP_200_OK
 
 
-######################################################################
-# DELETE A CUSTOMER
-######################################################################
+# ######################################################################
+# # DELETE A CUSTOMER
+# ######################################################################
 
 
 @app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
@@ -222,9 +233,9 @@ def delete_customer(customer_id):
         app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     return "", status.HTTP_204_NO_CONTENT
 
-######################################################################
-# REST API TO UPDATE CUSTOMER'S PERSONAL DATA
-######################################################################
+# ######################################################################
+# # REST API TO UPDATE CUSTOMER'S PERSONAL DATA
+# ######################################################################
 
 
 @app.route("/api/customers/<int:customer_id>", methods=["PUT"])
@@ -253,9 +264,9 @@ def update_customer(customer_id):
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
-######################################################################
-# ACTIVATE A CUSTOMER'S ACCOUNT
-######################################################################
+# ######################################################################
+# # ACTIVATE A CUSTOMER'S ACCOUNT
+# ######################################################################
 
 
 @app.route("/api/customers/<int:customer_id>/active", methods=["PUT"])
@@ -278,9 +289,9 @@ def activate_customer_account(customer_id):
 
     return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
-######################################################################
-# DEACTIVATE A CUSTOMER'S ACCOUNT
-######################################################################
+# ######################################################################
+# # DEACTIVATE A CUSTOMER'S ACCOUNT
+# ######################################################################
 
 
 @app.route("/api/customers/<int:customer_id>/active", methods=["DELETE"])

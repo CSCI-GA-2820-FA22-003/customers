@@ -5,7 +5,7 @@ Describe what your service does here
 """
 
 # from tkinter import E
-from flask import jsonify, request, make_response
+from flask import jsonify, request
 from flask_restx import fields, reqparse, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes

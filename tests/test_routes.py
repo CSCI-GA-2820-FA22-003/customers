@@ -384,6 +384,7 @@ class TestYourResourceServer(TestCase):
 
         # Check the data is correct
         new_customer = resp.get_json()
+        print(new_customer)
         self.assertTrue(new_customer["acc_active"])
 
         # Check to see the route sets acc_active to false

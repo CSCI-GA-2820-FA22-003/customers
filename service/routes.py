@@ -6,7 +6,7 @@ Describe what your service does here
 
 # from tkinter import E
 from flask import jsonify, request, make_response
-from flask_restx import fields, reqparse, Resource
+from flask_restx import fields, reqparse, inputs, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
 
@@ -57,8 +57,8 @@ customer_model = api.inherit(
 # query string arguments
 customer_args = reqparse.RequestParser()
 customer_args.add_argument('name', type=str, location='args', required=False, help='List Customers by name')
-# customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
-#                            required=False, help='List Customers by their active status')
+customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
+                           required=False, help='List Customers by their active status')
 
 ############################################################
 # H E A L T H   E N D P O I N TS
@@ -225,7 +225,7 @@ class CustomerCollection(Resource):
 ######################################################################
 #  PATH: /customers/{id}/activate
 ######################################################################
-@api.route('/customers/<customer_id>/activate')
+@api.route('/customers/<customer_id>/active')
 @api.param('customer_id', 'The Customer identifier')
 class ActivateResource(Resource):
     """ Activate actions on Customers """
@@ -242,6 +242,7 @@ class ActivateResource(Resource):
         This endpoint will Activate a Customer based on the id specified in the path
         """
         app.logger.info("Request to Activate a customer with id: %s", customer_id)
+        check_content_type("application/json")
         customer = Customer.find(customer_id)
         if not customer:
             abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.")
@@ -324,30 +325,6 @@ def delete_customer(customer_id):
         app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     return "", status.HTTP_204_NO_CONTENT
 
-######################################################################
-# ACTIVATE A CUSTOMER'S ACCOUNT
-######################################################################
-
-
-@app.route("/api/customers/<int:customer_id>/active", methods=["PUT"])
-def activate_customer_account(customer_id):
-    """
-    Activate a customer's account
-    """
-    app.logger.info("Request to activate the customer with id: %s", customer_id)
-    check_content_type("application/json")
-
-    # See if the account exists and abort if it doesn't
-    customer_account = Customer.find(customer_id)
-    if not customer_account:
-        abort(
-            status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
-        )
-
-    customer_account.acc_active = True
-    customer_account.update()
-
-    return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # DEACTIVATE A CUSTOMER'S ACCOUNT

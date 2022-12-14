@@ -143,8 +143,8 @@ class CustomerResource(Resource):
     @api.marshal_with(customer_model)
     def put(self, customer_id):
         """
-        Update a Pet
-        This endpoint will update a Pet based the body that is posted
+        Update a customer's personal data.
+        This endpoint will update a customer's data based on the body that is posted
         """
         app.logger.info("Request to update the customer with id: %s", customer_id)
         check_content_type("application/json")

@@ -138,7 +138,7 @@ class CustomerResource(Resource):
         customer = Customer.find(customer_id)
         if not customer:
             abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.",)
-        
+
         return customer.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------

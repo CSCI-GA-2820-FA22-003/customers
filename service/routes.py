@@ -136,6 +136,35 @@ class CustomerResource(Resource):
     # UPDATE AN EXISTING CUSTOMER
     # ------------------------------------------------------------------
 
+    # @app.route("/api/customers/<int:customer_id>", methods=["PUT"])
+    @api.doc('update_customer')
+    @api.response(404, 'Customer not found')
+    @api.expect(customer_model)
+    @api.marshal_with(customer_model)
+    def put(self, customer_id):
+        """
+        Update a customer's personal data.
+        This endpoint will update a customer's data based on the body that is posted
+        """
+        app.logger.info("Request to update the customer with id: %s", customer_id)
+        check_content_type("application/json")
+
+        # See if the account exists and abort if it doesn't
+        customer_account = Customer.find(customer_id)
+        if not customer_account:
+            abort(
+                status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
+            )
+
+        # Update from the json in the body of the request
+        customer_account.deserialize(request.get_json())
+        customer_account.id = customer_id
+        customer_account.lastname = customer_account.lastname.title()
+        customer_account.email = customer_account.email.lower()
+        customer_account.city = customer_account.city.title()
+        customer_account.update()
+        return customer_account.serialize(), status.HTTP_200_OK
+
     # ------------------------------------------------------------------
     # DELETE A CUSTOMER
     # ------------------------------------------------------------------
@@ -166,6 +195,7 @@ class CustomerCollection(Resource):
         in the body that is posted
         """
         app.logger.info("Request to create a Customer")
+        check_content_type("application/json")
         customer = Customer()
         app.logger.debug('Payload = %s', api.payload)
         customer.deserialize(api.payload)
@@ -276,37 +306,6 @@ def delete_customer(customer_id):
         customer.delete()
         app.logger.info("Customer with ID [%s] delete complete.", customer_id)
     return "", status.HTTP_204_NO_CONTENT
-
-######################################################################
-# REST API TO UPDATE CUSTOMER'S PERSONAL DATA
-######################################################################
-
-
-@app.route("/api/customers/<int:customer_id>", methods=["PUT"])
-def update_customer(customer_id):
-    """
-    Update a customer's personal data.
-    This endpoint will update a customer's data based on the body that is posted
-    """
-    app.logger.info("Request to update the customer with id: %s", customer_id)
-    check_content_type("application/json")
-
-    # See if the account exists and abort if it doesn't
-    customer_account = Customer.find(customer_id)
-    if not customer_account:
-        abort(
-            status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
-        )
-
-    # Update from the json in the body of the request
-    customer_account.deserialize(request.get_json())
-    customer_account.id = customer_id
-    customer_account.lastname = customer_account.lastname.title()
-    customer_account.email = customer_account.email.lower()
-    customer_account.city = customer_account.city.title()
-    customer_account.update()
-
-    return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)
 
 ######################################################################
 # ACTIVATE A CUSTOMER'S ACCOUNT

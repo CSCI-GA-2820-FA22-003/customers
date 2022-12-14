@@ -182,6 +182,8 @@ class CustomerResource(Resource):
 ######################################################################
 #  PATH: /customers
 ######################################################################
+
+
 @api.route('/customers', strict_slashes=False)
 class CustomerCollection(Resource):
     """ Handles all interactions with collections of Customers """

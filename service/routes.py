@@ -196,6 +196,32 @@ class CustomerCollection(Resource):
     # LIST ALL CUSTOMERS
     # ------------------------------------------------------------------
 
+    @api.doc('list_customers')
+    @api.expect(customer_args, validate=True)
+    @api.marshal_list_with(customer_model)
+    def get(self):
+        """Returns all of the Customers"""
+        app.logger.info("Request for all Customers")
+        customers = []
+        lastname = request.args.get("lastname")
+        city = request.args.get("city")
+        email = request.args.get("email")
+        firstname = request.args.get("firstname")
+        if lastname:
+            customers = Customer.find_by_lastname(lastname)
+        elif firstname:
+            customers = Customer.find_by_firstname(firstname)
+        elif city:
+            customers = Customer.find_by_city(city)
+        elif email:
+            customers = Customer.find_by_email(email)
+        else:
+            customers = Customer.all()
+
+        results = [customer.serialize() for customer in customers]
+        app.logger.info("Returning %d customers", len(results))
+        return results, status.HTTP_200_OK
+
     # ------------------------------------------------------------------
     # CREATE A NEW CUSTOMER
     # ------------------------------------------------------------------
@@ -243,7 +269,7 @@ class CustomerCollection(Resource):
 @api.route('/customers/<customer_id>/active')
 @api.param('customer_id', 'The Customer identifier')
 class ActivateResource(Resource):
-    """ Activate actions on Customers """
+    """ Activate/Deactivate actions on Customers """
 
     # ------------------------------------------------------------------
     # ACTIVATE A CUSTOMER
@@ -271,6 +297,26 @@ class ActivateResource(Resource):
     # DEACTIVATE A CUSTOMER
     # ------------------------------------------------------------------
 
+    @api.doc('deactivate_customer')
+    @api.response(404, 'Customer not found')
+    def delete(self, customer_id):
+        """
+        Deactivate a Customer
+        This endpoint will Deactivate a Customer based on the id specified in the path
+        """
+        app.logger.info("Request to Deactivate a customer with id: %s", customer_id)
+        check_content_type("application/json")
+        customer = Customer.find(customer_id)
+        if not customer:
+            abort(
+                status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
+            )
+
+        customer.acc_active = False
+        customer.update()
+        app.logger.info("Customer with ID [%s] deactivate complete.", customer_id)
+        return customer.serialize(), status.HTTP_200_OK
+
 
 ######################################################################
 # READ A CUSTOMER
@@ -294,58 +340,3 @@ def get_customer(customer_id):
         )
 
     return make_response(jsonify(customer.serialize()), status.HTTP_200_OK)
-
-######################################################################
-# LIST ALL CUSTOMERS
-######################################################################
-
-
-@app.route("/api/customers", methods=["GET"])
-def list_customers():
-    """Returns all of the Customers"""
-    app.logger.info("Request for all Customers")
-    customers = []
-    lastname = request.args.get("lastname")
-    city = request.args.get("city")
-    email = request.args.get("email")
-    firstname = request.args.get("firstname")
-    if lastname:
-        customers = Customer.find_by_lastname(lastname)
-    elif firstname:
-        customers = Customer.find_by_firstname(firstname)
-    elif city:
-        customers = Customer.find_by_city(city)
-    elif email:
-        customers = Customer.find_by_email(email)
-    else:
-        customers = Customer.all()
-
-    results = [customer.serialize() for customer in customers]
-    app.logger.info("Returning %d customers", len(results))
-    return jsonify(results), status.HTTP_200_OK
-
-
-######################################################################
-# DEACTIVATE A CUSTOMER'S ACCOUNT
-######################################################################
-
-
-@app.route("/api/customers/<int:customer_id>/active", methods=["DELETE"])
-def deactivate_customer_account(customer_id):
-    """
-    Deactivate a customer's account
-    """
-    app.logger.info("Request to deactivate the customer with id: %s", customer_id)
-    check_content_type("application/json")
-
-    # See if the account exists and abort if it doesn't
-    customer_account = Customer.find(customer_id)
-    if not customer_account:
-        abort(
-            status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found."
-        )
-
-    customer_account.acc_active = False
-    customer_account.update()
-
-    return make_response(jsonify(customer_account.serialize()), status.HTTP_200_OK)

@@ -5,8 +5,8 @@ Describe what your service does here
 """
 
 # from tkinter import E
-from flask import jsonify, request, url_for, make_response
-from flask_restx import fields, reqparse, inputs  # Api, Resource
+from flask import jsonify, request, make_response
+from flask_restx import fields, reqparse, Resource
 from service.models import Customer
 from .common import status  # HTTP Status Codes
 
@@ -50,16 +50,15 @@ customer_model = api.inherit(
     'CustomerModel',
     create_model,
     {
-        '_id': fields.String(readOnly=True,
-                             description='The unique id assigned internally by service'),
+        'id': fields.String(readOnly=True, description='The unique id assigned internally by service'),
     }
 )
 
 # query string arguments
 customer_args = reqparse.RequestParser()
 customer_args.add_argument('name', type=str, location='args', required=False, help='List Customers by name')
-customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
-                           required=False, help='List Customers by their active status')
+# customer_args.add_argument('acc_active', type=inputs.boolean, location='args',
+#                            required=False, help='List Customers by their active status')
 
 ############################################################
 # H E A L T H   E N D P O I N TS
@@ -114,45 +113,101 @@ def init_db():
     Customer.init_db(app)
 
 ######################################################################
-# CREATE A NEW CUSTOMER
+#  PATH: /customers/{id}
 ######################################################################
 
 
-@app.route("/api/customers", methods=["POST"])
-def create_customers():
+@api.route('/customers/<customer_id>')
+@api.param('customer_id', 'The Customer identifier')
+class CustomerResource(Resource):
     """
-    Creates a Customer
-    This endpoint will create a Customer based on the data in the body that is posted
+    CustomerResource class
+    Allows the manipulation of a single Customer
+    GET /customer{id} - Returns a Customer with the id
+    PUT /customer{id} - Update a Customer with the id
+    DELETE /customer{id} -  Deletes a Customer with the id
     """
-    app.logger.info("Request to create an Customer")
-    check_content_type("application/json")
 
-    # Create the account
-    customer = Customer()
-    customer.deserialize(request.get_json())
+    # ------------------------------------------------------------------
+    # RETRIEVE A CUSTOMER
+    # ------------------------------------------------------------------
 
-    # Setting to lower case for optimal possible case insensitive email queries later on
-    customer.email = customer.email.lower()
-    # Setting to title case for optimal possible case insensitive lastname and city queries later on
-    customer.lastname = customer.lastname.title()
-    customer.city = customer.city.title()
+    # ------------------------------------------------------------------
+    # UPDATE AN EXISTING CUSTOMER
+    # ------------------------------------------------------------------
 
-    if check_for_dupe_emails(customer.email):
-        abort(
-            status.HTTP_409_CONFLICT,
-            f"Another Customer with email '{customer.email}' found.",
-        )
-    customer.create()
+    # ------------------------------------------------------------------
+    # DELETE A CUSTOMER
+    # ------------------------------------------------------------------
 
-    # Create a message to return
-    message = customer.serialize()
-    # Change to "get customer" when it is made
-    location_url = url_for("get_customer", customer_id=customer.id, _external=True)
 
-    app.logger.info("Customer with ID [%s] created.", customer.id)
-    return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-    )
+######################################################################
+#  PATH: /customers
+######################################################################
+@api.route('/customers', strict_slashes=False)
+class CustomerCollection(Resource):
+    """ Handles all interactions with collections of Customers """
+
+    # ------------------------------------------------------------------
+    # LIST ALL CUSTOMERS
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # CREATE A NEW CUSTOMER
+    # ------------------------------------------------------------------
+    @api.doc('create_customers')
+    @api.response(400, 'The posted data was not valid')
+    @api.expect(create_model)
+    @api.marshal_with(customer_model, code=201)
+    def post(self):
+        """
+        Creates a Customer
+        This endpoint will create a Customer based on the data
+        in the body that is posted
+        """
+        app.logger.info("Request to create a Customer")
+        customer = Customer()
+        app.logger.debug('Payload = %s', api.payload)
+        customer.deserialize(api.payload)
+
+        # Setting to lower case for optimal possible case insensitive email queries later on
+        customer.email = customer.email.lower()
+        # Setting to title case for optimal possible case insensitive
+        # lastname and city queries later on
+        customer.lastname = customer.lastname.title()
+        customer.city = customer.city.title()
+
+        if check_for_dupe_emails(customer.email):
+            abort(
+                status.HTTP_409_CONFLICT,
+                f"Another Customer with email '{customer.email}' found.",
+            )
+
+        customer.create()
+        # Create a message to return
+        # message = customer.serialize()
+        location_url = api.url_for(CustomerResource, customer_id=customer.id, _external=True)
+
+        app.logger.info('Customer with new id [%s] created!', customer.id)
+        return customer.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
+
+
+######################################################################
+#  PATH: /customers/{id}/activate
+######################################################################
+@api.route('/customers/<customer_id>/activate')
+@api.param('customer_id', 'The Customer identifier')
+class ActivateResource(Resource):
+    """ Activate actions on Customers """
+
+    # ------------------------------------------------------------------
+    # ACTIVATE A CUSTOMER
+    # ------------------------------------------------------------------
+
+    # ------------------------------------------------------------------
+    # DEACTIVATE A CUSTOMER
+    # ------------------------------------------------------------------
+
 
 ######################################################################
 # READ A CUSTOMER

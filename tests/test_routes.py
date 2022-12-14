@@ -393,7 +393,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         updated_customer = resp.get_json()
-        self.assertEqual(new_customer["id"], updated_customer["id"])
+        self.assertEqual(str(new_customer["id"]), str(updated_customer["id"]))
         self.assertTrue(updated_customer["acc_active"])
 
     def test_activate_customer_account_not_found(self):
@@ -427,7 +427,7 @@ class TestYourResourceServer(TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         updated_customer = resp.get_json()
-        self.assertEqual(new_customer["id"], updated_customer["id"])
+        self.assertEqual(str(new_customer["id"]), str(updated_customer["id"]))
         self.assertFalse(updated_customer["acc_active"])
 
     def test_deactivate_customer_account_not_found(self):

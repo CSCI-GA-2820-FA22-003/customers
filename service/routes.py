@@ -197,7 +197,7 @@ class CustomerCollection(Resource):
         if args['lastname']:
             app.logger.info(f'Filtering by lastname: {args["lastname"]}')
             customers = Customer.find_by_lastname(args['lastname'])
-        if args['firstname']:
+        elif args['firstname']:
             app.logger.info(f'Filtering by firstname: {args["firstname"]}')
             customers = Customer.find_by_firstname(args['firstname'])
         elif args['city']:

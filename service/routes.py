@@ -168,7 +168,16 @@ class CustomerResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A CUSTOMER
     # ------------------------------------------------------------------
-
+    def delete(self, customer_id):
+        """ Delete a Customer """
+        app.logger.info("Request to delete customer with id: %s", customer_id)
+        check_content_type("application/json")
+        customer = Customer.find(customer_id)
+        if customer:
+            customer.delete()
+            app.logger.info("Customer with ID [%s] delete complete.",
+                            customer_id)
+        return "", status.HTTP_204_NO_CONTENT
 
 ######################################################################
 #  PATH: /customers
@@ -315,15 +324,15 @@ def list_customers():
 ######################################################################
 
 
-@app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
-def delete_customer(customer_id):
-    """ Delete a Customer """
-    app.logger.info("Request to delete customer with id: %s", customer_id)
-    customer = Customer.find(customer_id)
-    if customer:
-        customer.delete()
-        app.logger.info("Customer with ID [%s] delete complete.", customer_id)
-    return "", status.HTTP_204_NO_CONTENT
+# @app.route("/api/customers/<int:customer_id>", methods=["DELETE"])
+# def delete_customer(customer_id):
+#     """ Delete a Customer """
+#     app.logger.info("Request to delete customer with id: %s", customer_id)
+#     customer = Customer.find(customer_id)
+#     if customer:
+#         customer.delete()
+#         app.logger.info("Customer with ID [%s] delete complete.", customer_id)
+#     return "", status.HTTP_204_NO_CONTENT
 
 
 ######################################################################

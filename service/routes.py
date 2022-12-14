@@ -124,6 +124,22 @@ class CustomerResource(Resource):
     # ------------------------------------------------------------------
     # RETRIEVE A CUSTOMER
     # ------------------------------------------------------------------
+    @api.doc('get_customers')
+    @api.response(404, 'Customer not found')
+    @api.marshal_with(customer_model)
+    def get(self, customer_id):
+        """
+        Retrieve a single Customer
+        This endpoint will return a Customer based on it's id
+        """
+        app.logger.info("Request for Customer with id: %s", customer_id)
+
+        # See if the Customer exists and abort if it doesn't
+        customer = Customer.find(customer_id)
+        if not customer:
+            abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.",)
+        
+        return customer.serialize(), status.HTTP_200_OK
 
     # ------------------------------------------------------------------
     # UPDATE AN EXISTING CUSTOMER

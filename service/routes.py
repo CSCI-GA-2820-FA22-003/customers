@@ -168,7 +168,7 @@ class CustomerResource(Resource):
     # ------------------------------------------------------------------
     # DELETE A CUSTOMER
     # ------------------------------------------------------------------
-    def delete(self, customer_id):
+    def delete_customer(self, customer_id):
         """ Delete a Customer """
         app.logger.info("Request to delete customer with id: %s", customer_id)
         check_content_type("application/json")

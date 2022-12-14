@@ -204,6 +204,23 @@ class ActivateResource(Resource):
     # ACTIVATE A CUSTOMER
     # ------------------------------------------------------------------
 
+    @api.doc('activate_customer')
+    @api.response(404, 'Customer not found')
+    def put(self, customer_id):
+        """
+        Activates a Customer
+        This endpoint will Activate a Customer based on the id specified in the path
+        """
+        app.logger.info("Request to Activate a customer with id: %s", customer_id)
+        customer = Customer.find(customer_id)
+        if not customer:
+            abort(status.HTTP_404_NOT_FOUND, f"Customer with id '{customer_id}' was not found.")
+
+        customer.acc_active = True
+        customer.update()
+        app.logger.info("Customer with ID [%s] activation complete.", customer_id)
+        return customer.serialize(), status.HTTP_200_OK
+
     # ------------------------------------------------------------------
     # DEACTIVATE A CUSTOMER
     # ------------------------------------------------------------------

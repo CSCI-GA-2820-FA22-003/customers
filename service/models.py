@@ -150,7 +150,7 @@ class Customer(db.Model):
             firstname (string): the firstname of the Customers you want to match
         """
         app.logger.info("Processing firstname query for %s ...", firstname)
-        return cls.query.filter(cls.firstname == firstname)
+        return cls.query.filter(cls.firstname == firstname.title())
 
     @classmethod
     def find_by_email(cls, email):
